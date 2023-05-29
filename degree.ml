@@ -1,27 +1,24 @@
-type value = { range : (int * int) option; count : int }
+type indexed_count = { first_at : int; last_at : int; count : int }
 
 module Data = Map.Make (Int)
 
 let build_knowledge nums =
   let aux (idx, data) n =
     let value =
-      Data.find_opt n data
-      |> Option.value ~default:{ range = Some (idx, idx); count = 0 }
+      match Data.find_opt n data with
+      | Some v -> v
+      | None -> { first_at = idx; last_at = idx; count = 0 }
     in
-    let left, _ = Option.get value.range in
     let prev_count = value.count in
     ( idx + 1,
-      Data.add n { range = Some (left, idx); count = prev_count + 1 } data )
+      Data.add n { value with last_at = idx; count = prev_count + 1 } data )
   in
   List.fold_left aux (0, Data.empty) nums |> snd
 
 let print_entry n value =
-  let open Printf in
-  let range =
-    Option.map (fun (s, e) -> sprintf "(%d, %d)" s e) value.range
-    |> Option.value ~default:"<>"
-  in
-  sprintf "%d: %s [%d]" n range value.count |> print_endline
+  Printf.sprintf "%d: (first_at: %d, last_at: %d) [%d]" n value.first_at
+    value.last_at value.count
+  |> print_endline
 
 let process knowledge =
   let degree =
@@ -34,9 +31,8 @@ let process knowledge =
   in
   List.fold_left_map
     (fun acc n ->
-      let { range } = Data.find n knowledge in
-      let start_idx, end_idx = Option.get range in
-      let subarray_len = end_idx - start_idx + 1 in
+      let { first_at; last_at } = Data.find n knowledge in
+      let subarray_len = last_at - first_at + 1 in
       (Int.min acc subarray_len, subarray_len))
     Int.max_int most_frequent
 
