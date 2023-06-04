@@ -1,4 +1,4 @@
-type occurrence = { first_at : int; length : int; count : int }
+type occurrence = { first_at : int; last_at : int; count : int }
 
 module Occurrences = Map.Make (Int)
 
@@ -7,23 +7,23 @@ let build_knowledge nums =
   let update_degree_and_occs (degree, occs) (idx, n) =
     let degree, occ =
       match Occurrences.find_opt n occs with
-      | Some ({ count; first_at; _ } as v) ->
+      | Some ({ count; _ } as v) ->
           let count = count + 1 in
-          (Int.max degree count, { v with length = idx - first_at + 1; count })
-      | None -> (degree, { first_at = idx; length = 1; count = 1 })
+          (Int.max degree count, { v with last_at = idx; count })
+      | None -> (degree, { first_at = idx; last_at = idx; count = 1 })
     in
     (degree, Occurrences.add n occ occs)
   in
   List.fold_left update_degree_and_occs (0, Occurrences.empty) indexed
 
 let print_entry n value =
-  let { first_at; length; count } = value in
-  Printf.sprintf "%d: (first_at: %d, length: %d) [%d]" n first_at length count
+  let { first_at; last_at; count } = value in
+  Printf.sprintf "%d: (first_at: %d, last_at: %d) [%d]" n first_at last_at count
   |> print_endline
 
 let process (degree, knowledge) =
-  let cons_if_degree _ { count; length; _ } acc =
-    if count = degree then length :: acc else acc
+  let cons_if_degree _ { count; last_at; first_at } acc =
+    if count = degree then (last_at - first_at + 1) :: acc else acc
   in
   match Occurrences.fold cons_if_degree knowledge [] with
   | first :: rest -> Some (List.fold_left Int.min first rest)
