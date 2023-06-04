@@ -25,8 +25,7 @@ let process (degree, knowledge) =
   let cons_if_degree n { count; length } acc =
     if count = degree then length :: acc else acc
   in
-  let subarray_lengths = Occurrences.fold cons_if_degree knowledge [] in
-  match subarray_lengths with
+  match Occurrences.fold cons_if_degree knowledge [] with
   | first :: rest -> Some (List.fold_left Int.min first rest)
   | [] -> None
 
