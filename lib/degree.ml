@@ -7,7 +7,7 @@ let build_knowledge nums =
   let update_degree_and_occs (degree, occs) (idx, n) =
     let degree, occ =
       match Occurrences.find_opt n occs with
-      | Some ({ count; first_at } as v) ->
+      | Some ({ count; first_at; _ } as v) ->
           let count = count + 1 in
           (Int.max degree count, { v with length = idx - first_at + 1; count })
       | None -> (degree, { first_at = idx; length = 1; count = 1 })
@@ -22,7 +22,7 @@ let print_entry n value =
   |> print_endline
 
 let process (degree, knowledge) =
-  let cons_if_degree n { count; length } acc =
+  let cons_if_degree _ { count; length; _ } acc =
     if count = degree then length :: acc else acc
   in
   match Occurrences.fold cons_if_degree knowledge [] with
