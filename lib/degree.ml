@@ -22,10 +22,13 @@ let print_entry n value =
   |> print_endline
 
 let process (degree, knowledge) =
-  let cons_if_degree _ { count; last_at; first_at } acc =
-    if count = degree then (last_at - first_at + 1) :: acc else acc
+  let occurrence_length (_, { first_at; last_at; count }) =
+    if count = degree then Some (last_at - first_at + 1) else None
   in
-  match Occurrences.fold cons_if_degree knowledge [] with
+  let subarray_lens_of_most_frequent =
+    Occurrences.bindings knowledge |> List.filter_map occurrence_length
+  in
+  match subarray_lens_of_most_frequent with
   | first :: rest -> Some (List.fold_left Int.min first rest)
   | [] -> None
 
