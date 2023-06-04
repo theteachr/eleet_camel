@@ -1,22 +1,21 @@
-type indexed_count = { first_at : int; length : int; count : int }
+type occurrence = { first_at : int; length : int; count : int }
 
-module IndexedCount = Map.Make (Int)
+module Occurrences = Map.Make (Int)
 
 let build_knowledge nums =
   let indexed = List.mapi (fun i n -> (i, n)) nums in
-  let aux (curr_max, data) (idx, n) =
+  let update_degree_and_occs (curr_max, occs) (idx, n) =
     let value =
-      match IndexedCount.find_opt n data with
+      match Occurrences.find_opt n occs with
       | Some v -> v
       | None -> { first_at = idx; length = 0; count = 0 }
     in
-    let new_count = value.count + 1 in
-    let updated_value =
-      { value with length = idx - value.first_at + 1; count = new_count }
-    in
-    (Int.max curr_max new_count, IndexedCount.add n updated_value data)
+    let { count; first_at } = value in
+    let count = count + 1 in
+    let updated_value = { value with length = idx - first_at + 1; count } in
+    (Int.max curr_max count, Occurrences.add n updated_value occs)
   in
-  List.fold_left aux (0, IndexedCount.empty) indexed |> Option.some
+  List.fold_left update_degree_and_occs (0, Occurrences.empty) indexed
 
 let print_entry n value =
   let { first_at; length; count } = value in
@@ -24,29 +23,14 @@ let print_entry n value =
   |> print_endline
 
 let process (degree, knowledge) =
-  Printf.sprintf "Degree: %d" degree |> print_endline;
-  let most_frequent =
-    IndexedCount.fold
-      (fun num { count } res -> if count = degree then num :: res else res)
-      knowledge []
+  let cons_if_degree n { count; length } acc =
+    if count = degree then length :: acc else acc
   in
-  match most_frequent with
-  | first :: rest ->
-      List.fold_left_map
-        (fun acc n ->
-          let { length } = IndexedCount.find n knowledge in
-          (Int.min acc length, length))
-        first most_frequent
-      |> Option.some
+  let subarray_lengths = Occurrences.fold cons_if_degree knowledge [] in
+  match subarray_lengths with
+  | first :: rest -> Some (List.fold_left Int.min first rest)
   | [] -> None
 
 let test = [ 1; 2; 2; 1; 3 ]
-
-let () =
-  match build_knowledge test with
-  | Some (_, data) -> IndexedCount.iter print_entry data
-  | None -> print_endline "¯\\_(ツ)_/¯"
-
-let solve =
-  let res = test |> build_knowledge in
-  Option.bind res process
+let () = Occurrences.iter print_entry (build_knowledge test |> snd)
+let solve = test |> build_knowledge |> process
