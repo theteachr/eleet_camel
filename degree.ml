@@ -4,16 +4,15 @@ module Occurrences = Map.Make (Int)
 
 let build_knowledge nums =
   let indexed = List.mapi (fun i n -> (i, n)) nums in
-  let update_degree_and_occs (curr_max, occs) (idx, n) =
-    let value =
+  let update_degree_and_occs (degree, occs) (idx, n) =
+    let degree, occ =
       match Occurrences.find_opt n occs with
-      | Some v -> v
-      | None -> { first_at = idx; length = 0; count = 0 }
+      | Some ({ count; first_at } as v) ->
+          let count = count + 1 in
+          (Int.max degree count, { v with length = idx - first_at + 1; count })
+      | None -> (degree, { first_at = idx; length = 1; count = 1 })
     in
-    let { count; first_at } = value in
-    let count = count + 1 in
-    let updated_value = { value with length = idx - first_at + 1; count } in
-    (Int.max curr_max count, Occurrences.add n updated_value occs)
+    (degree, Occurrences.add n occ occs)
   in
   List.fold_left update_degree_and_occs (0, Occurrences.empty) indexed
 
