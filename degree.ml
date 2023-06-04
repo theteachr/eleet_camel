@@ -30,6 +30,13 @@ let process (degree, knowledge) =
   | first :: rest -> Some (List.fold_left Int.min first rest)
   | [] -> None
 
-let test = [ 1; 2; 2; 1; 3 ]
-let () = Occurrences.iter print_entry (build_knowledge test |> snd)
-let solve = test |> build_knowledge |> process
+let tests = [ [ 1; 2; 2; 1; 3 ]; [ 1; 2; 2; 3; 1; 4; 2 ] ]
+
+let () =
+  let print_occs test =
+    Occurrences.iter print_entry (build_knowledge test |> snd)
+  in
+  tests |> List.iter print_occs
+
+let solutions =
+  List.rev_map (fun test -> test |> build_knowledge |> process) tests
