@@ -1,8 +1,21 @@
 open Eleet_camel
 
-let () =
-  let print_solution = function
-    | Some answer -> print_endline (Int.to_string answer)
-    | None -> print_endline "¯\\_(ツ)_/¯"
+module type Solution = sig
+  type input
+  type output
+
+  val parse : string -> input
+  val solve : input -> output
+  val to_string : output -> string
+end
+
+let solutions : (module Solution) list = [ (module Degree) ]
+
+let run_solution tests (module Solver : Solution) =
+  let print_solution test =
+    test |> Solver.parse |> Solver.solve |> Solver.to_string |> print_endline
   in
-  Degree.solutions |> List.iter print_solution
+  tests |> List.iter print_solution
+
+let tests = [ "1 2 2 1 3"; "1 2 2 3 1 4 2" ]
+let () = solutions |> List.iter (run_solution tests)

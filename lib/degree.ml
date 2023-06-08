@@ -1,3 +1,9 @@
+type input = int list
+type output = int option
+
+let parse line = line |> String.split_on_char ' ' |> List.map int_of_string
+let to_string = function Some solution -> Int.to_string solution | None -> "0"
+
 type occurrence = { first_at : int; last_at : int; count : int }
 
 module Occurrences = Map.Make (Int)
@@ -19,7 +25,8 @@ let print_entry n value =
   Printf.sprintf "%d: (first_at: %d, last_at: %d) [%d]" n first_at last_at count
   |> print_endline
 
-let process (degree, knowledge) =
+let solve test =
+  let degree, knowledge = build_knowledge test in
   let occurrence_length (_, { first_at; last_at; count }) =
     if count = degree then Some (last_at - first_at + 1) else None
   in
@@ -29,14 +36,3 @@ let process (degree, knowledge) =
   match subarray_lens_of_most_frequent with
   | first :: rest -> Some (List.fold_left Int.min first rest)
   | [] -> None
-
-let tests = [ [ 1; 2; 2; 1; 3 ]; [ 1; 2; 2; 3; 1; 4; 2 ] ]
-
-let () =
-  let print_occs test =
-    Occurrences.iter print_entry (build_knowledge test |> snd)
-  in
-  tests |> List.iter print_occs
-
-let solutions =
-  List.rev_map (fun test -> test |> build_knowledge |> process) tests
