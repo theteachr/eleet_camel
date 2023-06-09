@@ -1,4 +1,4 @@
 (executable
  (public_name eleet_camel)
  (name main)
- (libraries eleet_camel))
+ (libraries eleet_camel str))
