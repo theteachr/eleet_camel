@@ -13,7 +13,7 @@ let to_string (f, s) = Printf.sprintf "%d %d" f s
 
 let solve (nums, target) =
   let rec aux acc = function
-    | [] -> Index_map.iter (fun n i -> Printf.sprintf "n = %d; i = %d" n i |> print_endline) acc;failwith "The problem statement lied"
+    | [] -> failwith "The problem statement lied"
     | (i, n) :: t -> begin
         match Index_map.find_opt (n - target |> abs) acc with
         | Some i' -> (i', i) (* TODO: Make sure i' < i *)
