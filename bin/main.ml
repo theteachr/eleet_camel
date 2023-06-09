@@ -26,10 +26,11 @@ let load_tests problem_id =
 
 let run_solutions tests (module Solver : Solution) =
   let get_solution_string test =
-    let sol_str = test
-    |> Solver.parse
-    |> Solver.solve
-    |> Solver.to_string
+    let sol_str =
+      test
+      |> Solver.parse
+      |> Solver.solve
+      |> Solver.to_string
     in
     sol_str ^ "\n"
   in
