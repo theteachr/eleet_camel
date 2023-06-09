@@ -1,8 +1,14 @@
 type input = int list
 type output = int option
 
-let parse line = line |> String.split_on_char ' ' |> List.map int_of_string
-let to_string = function Some solution -> Int.to_string solution | None -> "0"
+let parse line =
+  line
+  |> String.split_on_char ' '
+  |> List.map int_of_string
+
+let to_string = function
+  | Some solution -> Int.to_string solution
+  | None -> "0"
 
 type occurrence = { first_at : int; last_at : int; count : int }
 
