@@ -14,7 +14,12 @@ module Solutions = Map.Make (String)
 let string_map_of_pairs =
   List.fold_left (fun m (n, v) -> Solutions.add n v m) Solutions.empty
 
-let pairs : (string * (module Solution)) list = [ ("697", (module Degree)) ]
+let pairs : (string * (module Solution)) list =
+  [
+    ("697", (module Degree));
+    ("20", (module Bal_parens));
+    ("1", (module Two_sum));
+  ]
 let solutions = pairs |> string_map_of_pairs
 
 let tests_file = Printf.sprintf "tests/%s/tests.txt"
