@@ -20,8 +20,8 @@ let pairs : (string * (module Solution)) list =
     ("20", (module Bal_parens));
     ("1", (module Two_sum));
   ]
-let solutions = pairs |> string_map_of_pairs
 
+let solutions = pairs |> string_map_of_pairs
 let tests_file = Printf.sprintf "tests/%s/tests.txt"
 
 let load_tests problem_id =
