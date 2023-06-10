@@ -19,6 +19,7 @@ let pairs : (string * (module Solution)) list =
     ("697", (module Degree));
     ("20", (module Bal_parens));
     ("1", (module Two_sum));
+    ("2490", (module Circular_sentences));
   ]
 
 let solutions = pairs |> string_map_of_pairs
