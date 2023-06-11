@@ -16,6 +16,7 @@ type occurrence =
 
 module Occurrences = Map.Make (Int)
 
+(* TODO: Explain *)
 let build_knowledge nums =
   let indexed = List.mapi (fun i n -> (i, n)) nums in
   let update_degree_and_occs (degree, occs) (idx, n) =
