@@ -22,12 +22,17 @@ let pairs : (string * (module Solution)) list =
     ("2490", (module Circular_sentences));
   ]
 
-let solutions = pairs |> string_map_of_pairs
+let new_line = "\n"
+let test_seperator = "---" ^ "\n"
+let expected_file = "expected.txt"
+
 let tests_file = Printf.sprintf "tests/%s/tests.txt"
+
+let solutions = pairs |> string_map_of_pairs
 
 let load_tests problem_id =
   In_channel.(with_open_text (tests_file problem_id) input_all)
-  |> Str.(split @@ regexp "---\n")
+  |> Str.(split @@ regexp test_seperator)
   |> List.map String.trim
 
 let run_solutions tests (module Solver : Solution) =
@@ -38,11 +43,11 @@ let run_solutions tests (module Solver : Solution) =
       |> Solver.solve
       |> Solver.to_string
     in
-    sol_str ^ "\n"
+    sol_str ^ new_line
   in
   tests
   |> List.map get_solution_string
-  |> String.concat "---\n"
+  |> String.concat test_seperator
 
 let () =
   let output_file_solution (problem_id, solver) =
@@ -50,7 +55,7 @@ let () =
     let solutions = run_solutions tests solver in
     let solutions_file =
       let tests_dir = Filename.dirname (tests_file problem_id) in
-      Filename.concat tests_dir "expected.txt"
+      Filename.concat tests_dir expected_file
     in
     (solutions_file, solutions)
   in
