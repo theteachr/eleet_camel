@@ -1,8 +1,14 @@
-type bracket = Round | Curly | Square
+type bracket =
+  | Round
+  | Curly
+  | Square
+
 type opening_bracket = Opening of bracket
 
 module Bracket_state = struct
-  type t = Open of bracket | Close of bracket
+  type t =
+    | Open of bracket
+    | Close of bracket
 
   let of_char = function
     | '(' -> Some (Open Round)
@@ -15,6 +21,7 @@ module Bracket_state = struct
 end
 
 type input = Bracket_state.t list
+
 type output = bool
 
 let parse line =
@@ -27,9 +34,10 @@ let to_string = Bool.to_string
 
 let solve brackets =
   let open Bracket_state in
-  let rec aux input st = match (input, st) with
+  let rec aux input st =
+    match (input, st) with
     | [], [] -> true
-    | Open b :: bs, _ -> aux bs ((Opening b) :: st)
+    | Open b :: bs, _ -> aux bs (Opening b :: st)
     | Close b :: bs, Opening b' :: bs' when b = b' -> aux bs bs'
     | _ -> false
   in

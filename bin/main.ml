@@ -14,21 +14,23 @@ module Solutions = Map.Make (String)
 let string_map_of_pairs =
   List.fold_left (fun m (n, v) -> Solutions.add n v m) Solutions.empty
 
-let pairs : (string * (module Solution)) list =
-  [
-    ("697", (module Degree));
-    ("20", (module Bal_parens));
-    ("1", (module Two_sum));
-    ("2490", (module Circular_sentences));
+let solvers : (string * (module Solution)) list =
+  [ ("697", (module Degree))
+  ; ("20", (module Bal_parens))
+  ; ("1", (module Two_sum))
+  ; ("2490", (module Circular_sentences))
   ]
 
+(* This shadowing is done to avoid module type inference complications. *)
+let solvers = solvers |> string_map_of_pairs
+
 let new_line = "\n"
+
 let test_seperator = "---" ^ "\n"
+
 let expected_file = "expected.txt"
 
 let tests_file = Printf.sprintf "tests/%s/tests.txt"
-
-let solutions = pairs |> string_map_of_pairs
 
 let load_tests problem_id =
   In_channel.(with_open_text (tests_file problem_id) input_all)
@@ -64,7 +66,7 @@ let () =
     let out_channel = open_text file in
     output_string out_channel answer
   in
-  solutions
+  solvers
   |> Solutions.bindings
   |> List.map output_file_solution
   |> List.iter write_solution
