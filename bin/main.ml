@@ -26,7 +26,7 @@ let solvers = solvers |> string_map_of_pairs
 
 let new_line = "\n"
 
-let test_seperator = "---" ^ "\n"
+let test_seperator = "---" ^ new_line
 
 let expected_file = "expected.txt"
 
