@@ -32,13 +32,12 @@ let parse line =
 
 let to_string = Bool.to_string
 
-let solve brackets =
+let rec balanced st brackets =
   let open Bracket_state in
-  let rec aux input st =
-    match (input, st) with
-    | [], [] -> true
-    | Open b :: bs, _ -> aux bs (Opening b :: st)
-    | Close b :: bs, Opening b' :: bs' when b = b' -> aux bs bs'
-    | _ -> false
-  in
-  aux brackets []
+  match (brackets, st) with
+  | [], [] -> true
+  | Open b :: bs, _ -> balanced (Opening b :: st) bs
+  | Close b :: bs, Opening b' :: bs' when b = b' -> balanced bs' bs
+  | _ -> false
+
+let solve = balanced []
