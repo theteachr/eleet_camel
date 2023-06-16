@@ -31,8 +31,8 @@ let build_knowledge nums =
 
 let print_entry n value =
   let { first_at; last_at; count } = value in
-  Printf.sprintf "%d: (first_at: %d, last_at: %d) [%d]" n first_at last_at count
-  |> print_endline
+  let open Printf in
+  printf "%d: (first_at: %d, last_at: %d) [%d]\n" n first_at last_at count
 
 let solve test =
   let degree, knowledge = build_knowledge test in
