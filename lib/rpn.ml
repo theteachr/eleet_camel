@@ -28,19 +28,15 @@ module Token = struct
   let num n = Num n
 
   let of_string = function
-    | "+" -> Ok (Op Op.Add)
-    | "-" -> Ok (Op Op.Sub)
-    | "*" -> Ok (Op Op.Mul)
-    | "/" -> Ok (Op Op.Div)
-    | s -> begin
-        int_of_string_opt s
-        |> Option.map num
-        |> Option.to_result ~none:`Invalid_token
-      end
+    | "+" -> Some (Op Op.Add)
+    | "-" -> Some (Op Op.Sub)
+    | "*" -> Some (Op Op.Mul)
+    | "/" -> Some (Op Op.Div)
+    | s -> int_of_string_opt s |> Option.map num
 end
 
 let parse line =
-  String.split_on_char ' ' line |> List.map (Result.get_ok << Token.of_string)
+  String.split_on_char ' ' line |> List.map (Option.get << Token.of_string)
 
 type input = Token.t list
 
