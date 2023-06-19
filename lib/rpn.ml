@@ -1,4 +1,3 @@
-open Collections
 open Stdplus.Infix
 
 module Op = struct
@@ -51,19 +50,11 @@ let to_string = function
   | Some answer -> Int.to_string answer
   | None -> "Err..."
 
-let eval_once op out =
-  let open Deq in
-  let* rite, out = pop_back out in
-  let* left, out = pop_back out in
-  let res = (Op.f op) left rite in
-  Some (res >>: out)
-
-let rec eval_rpn tokens out =
-  let open Deq in
-  match tokens with
-  | [] when length out = 1 -> Some (pop_front out |> Option.get)
-  | Token.Num n :: ts -> eval_rpn ts (n >>: out)
-  | Token.Op op :: ts -> eval_once op out >>= eval_rpn ts
+let rec eval_rpn out tokens =
+  match (tokens, out) with
+  | [], [ x ] -> Some x
+  | Token.Num n :: ts, out -> eval_rpn (n :: out) ts
+  | Token.Op op :: ts, r :: l :: out -> eval_rpn ((Op.f op) l r :: out) ts
   | _ -> None
 
-let solve tokens = eval_rpn tokens Deq.empty |> Option.map fst
+let solve tokens = eval_rpn [] tokens
