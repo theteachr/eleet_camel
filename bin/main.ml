@@ -19,6 +19,7 @@ let solvers : (string * (module Solution)) list =
   ; ("20", (module Bal_parens))
   ; ("1", (module Two_sum))
   ; ("2490", (module Circular_sentences))
+  ; ("150", (module Rpn))
   ]
 
 (* This shadowing is done to avoid module type inference complications. *)
