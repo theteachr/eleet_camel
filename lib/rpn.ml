@@ -57,4 +57,4 @@ let rec eval_rpn out tokens =
   | Token.Op op :: ts, r :: l :: out -> eval_rpn ((Op.f op) l r :: out) ts
   | _ -> None
 
-let solve tokens = eval_rpn [] tokens
+let solve = eval_rpn []
