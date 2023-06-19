@@ -2,10 +2,13 @@ open Eleet_camel
 
 module type Solution = sig
   type input
+
   type output
 
   val parse : string -> input
+
   val solve : input -> output
+
   val to_string : output -> string
 end
 
