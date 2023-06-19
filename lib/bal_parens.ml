@@ -1,3 +1,5 @@
+open Stdplus.Infix
+
 type bracket =
   | Round
   | Curly
@@ -28,7 +30,7 @@ let parse line =
   line
   |> String.to_seq
   |> List.of_seq
-  |> List.filter_map Bracket_state.of_char
+  |> List.map (Option.get << Bracket_state.of_char)
 
 let to_string = Bool.to_string
 

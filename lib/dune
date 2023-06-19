@@ -1,2 +1,3 @@
 (library
- (name eleet_camel))
+ (name eleet_camel)
+ (libraries collections stdplus))
