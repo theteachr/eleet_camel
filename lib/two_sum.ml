@@ -17,12 +17,12 @@ let to_string (f, s) =
   Printf.sprintf "%d %d" small big
 
 let solve (nums, target) =
-  let rec aux acc = function
-    | [] -> failwith "The problem statement lied"
+  let rec find_index_pair num_idx_map = function
     | (i, n) :: t -> begin
-        match Index_map.find_opt (n - target |> abs) acc with
+        match Index_map.find_opt (n - target |> abs) num_idx_map with
         | Some i' -> (i', i)
-        | _ -> aux (Index_map.add n i acc) t
+        | _ -> find_index_pair (Index_map.add n i num_idx_map) t
       end
+    | [] -> failwith "The problem statement lied"
   in
-  aux Index_map.empty (enumerate nums)
+  find_index_pair Index_map.empty (enumerate nums)
