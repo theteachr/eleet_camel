@@ -23,8 +23,7 @@ let rec add_two_lists carry sums = function
       let sum = x + y + carry in
       let carry, value_at_ones = sum /% 10 in
       add_two_lists carry (value_at_ones :: sums) (xs, ys)
-  | [], zs | zs, [] ->
-      if carry = 0 then List.rev_append sums zs
-      else add_two_lists 1 sums (zs, [ 0 ])
+  | [], zs | zs, [] when carry = 0 -> List.rev_append sums zs
+  | [], zs | zs, [] -> add_two_lists 1 sums (zs, [ 0 ])
 
 let solve = add_two_lists 0 []
