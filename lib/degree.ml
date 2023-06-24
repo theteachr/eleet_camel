@@ -1,3 +1,5 @@
+open Stdplus.Lists
+
 type input = int list
 
 type output = int option
@@ -18,7 +20,6 @@ module Occurrences = Map.Make (Int)
 
 (* TODO: Explain *)
 let build_knowledge nums =
-  let indexed = List.mapi (fun i n -> (i, n)) nums in
   let update_degree_and_occs (degree, occs) (idx, n) =
     let occ =
       match Occurrences.find_opt n occs with
@@ -27,7 +28,7 @@ let build_knowledge nums =
     in
     (Int.max occ.count degree, Occurrences.add n occ occs)
   in
-  List.fold_left update_degree_and_occs (0, Occurrences.empty) indexed
+  List.fold_left update_degree_and_occs (0, Occurrences.empty) (enumerate nums)
 
 let print_entry n value =
   let { first_at; last_at; count } = value in

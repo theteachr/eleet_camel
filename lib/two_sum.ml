@@ -1,3 +1,5 @@
+open Stdplus.Lists
+
 type input = int list * int
 
 type output = int * int
@@ -23,4 +25,4 @@ let solve (nums, target) =
         | _ -> aux (Index_map.add n i acc) t
       end
   in
-  aux Index_map.empty (nums |> List.mapi (fun i n -> (i, n)))
+  aux Index_map.empty (enumerate nums)

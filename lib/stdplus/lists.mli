@@ -1,0 +1,1 @@
+val enumerate : 'a list -> (int * 'a) list
