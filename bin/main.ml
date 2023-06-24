@@ -24,6 +24,7 @@ let solvers : (string * (module Solution)) list =
   ; ("2490", (module Circular_sentences))
   ; ("150", (module Rpn))
   ; ("2", (module Add_two))
+  ; ("208", (module Prefix_tree))
   ]
 
 (* This shadowing is done to avoid module type inference complications. *)
