@@ -17,6 +17,15 @@ let pop_back q =
   in
   pop [] q
 
+let pop_back_n n q =
+  let rec pop n popped q =
+    match (n, pop_back q) with
+    | 0, _ -> Some (popped, q)
+    | n, Some (e, q) -> pop (n - 1) (e :: popped) q
+    | _ -> None
+  in
+  pop n [] q
+
 let ( >>: ) = push_back
 
 let length = List.length

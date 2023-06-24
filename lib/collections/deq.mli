@@ -8,6 +8,8 @@ val push_front : 'a -> 'a t -> 'a t
 
 val pop_back : 'a t -> ('a * 'a t) option
 
+val pop_back_n : int -> 'a t -> ('a list * 'a t) option
+
 val pop_front : 'a t -> ('a * 'a t) option
 
 val length : 'a t -> int

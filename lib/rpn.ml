@@ -53,10 +53,9 @@ let to_string = function
 
 let eval_once op out =
   let open Deq in
-  let* rite, out = pop_back out in
-  let* left, out = pop_back out in
-  let res = (Op.f op) left rite in
-  Some (res >>: out)
+  match pop_back_n 2 out with
+  | Some ([ left; rite ], out) -> (Op.f op) left rite >>: out |> Option.some
+  | _ -> None
 
 let rec eval_rpn tokens out =
   let open Deq in
