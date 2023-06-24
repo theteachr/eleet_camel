@@ -1,4 +1,5 @@
 open Stdplus.Infix
+open Stdplus.Lists
 
 type input = int list * int list
 
@@ -18,12 +19,13 @@ let to_string output =
   |> List.map Int.to_string
   |> String.concat " "
 
-let rec add_two_lists carry sums = function
-  | x :: xs, y :: ys ->
-      let sum = x + y + carry in
-      let carry, value_at_ones = sum /% 10 in
-      add_two_lists carry (value_at_ones :: sums) (xs, ys)
-  | [], zs | zs, [] when carry = 0 -> List.rev_append sums zs
-  | [], zs | zs, [] -> add_two_lists 1 sums (zs, [ 0 ])
-
-let solve = add_two_lists 0 []
+let solve (l_one, l_two) =
+  let add_with_carry (c, sums) (a, b) =
+    let sum = a + b + c in
+    let c, units_digit = sum /% 10 in
+    (c, units_digit :: sums)
+  in
+  let zipped = zip_longest l_one l_two ~default:0 in
+  let carry, sums = List.fold_left add_with_carry (0, []) zipped in
+  let sums = if carry = 1 then 1 :: sums else sums in
+  List.rev sums
