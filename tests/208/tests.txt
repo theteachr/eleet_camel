@@ -1,0 +1,7 @@
+Trie
+insert:apple
+search:apple
+search:app
+startsWith:app
+insert:app
+search:app
