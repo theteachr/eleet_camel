@@ -29,27 +29,23 @@ let insert s root =
   in
   chars_of_string s |> ins root
 
+let rec lookup chars node =
+  match (chars, node) with
+  | [], { ends; _ } -> `Success ends
+  | ch :: chars, { paths; _ } ->
+      paths.(char_index ch)
+      |> Option.map (lookup chars)
+      |> Option.value ~default:`Failure
+
 let search text root =
-  let rec exists chs node =
-    match (chs, node) with
-    | [], { ends; _ } -> ends
-    | ch :: chs, { paths; _ } ->
-        paths.(char_index ch)
-        |> Option.map (exists chs)
-        |> Option.value ~default:false
-  in
-  exists (chars_of_string text) root
+  match lookup (chars_of_string text) root with
+  | `Success ends_here -> ends_here
+  | `Failure -> false
 
 let starts_with prefix root =
-  let rec is_prefix chs node =
-    match (chs, node) with
-    | [], _ -> true
-    | ch :: chs, { paths; _ } ->
-        paths.(char_index ch)
-        |> Option.map (is_prefix chs)
-        |> Option.value ~default:false
-  in
-  is_prefix (chars_of_string prefix) root
+  match lookup (chars_of_string prefix) root with
+  | `Success _ -> true
+  | `Failure -> false
 
 module Command = struct
   type t =
