@@ -3,13 +3,13 @@ open Stdplus.Infix
 let char_index ch = Char.code ch - Char.code 'a'
 
 type trie_node =
-  { mutable ends : bool
+  { mutable end_of_word : bool
   ; paths : trie_node option array
   }
 
 let new_paths () = Array.make 26 None
 
-let new_node () = { ends = false; paths = new_paths () }
+let new_node () = { end_of_word = false; paths = new_paths () }
 
 let chars_of_string s = s |> String.to_seq |> List.of_seq
 
@@ -24,14 +24,14 @@ let insert s root =
         node
   in
   let rec ins root = function
-    | [] -> root.ends <- true
-    | ch :: chs -> ins (next_node ch root) chs
+    | [] -> root.end_of_word <- true
+    | ch :: chars -> ins (next_node ch root) chars
   in
   chars_of_string s |> ins root
 
 let rec lookup chars node =
   match (chars, node) with
-  | [], { ends; _ } -> `Success ends
+  | [], { end_of_word; _ } -> `Success end_of_word
   | ch :: chars, { paths; _ } ->
       paths.(char_index ch)
       |> Option.map (lookup chars)
