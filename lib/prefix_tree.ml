@@ -39,7 +39,7 @@ let rec lookup chars node =
 
 let search text root =
   match lookup (chars_of_string text) root with
-  | `Success ends_here -> ends_here
+  | `Success end_of_word -> end_of_word
   | `Failure -> false
 
 let starts_with prefix root =
