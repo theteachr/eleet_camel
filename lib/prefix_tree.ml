@@ -14,7 +14,7 @@ let new_node () = { end_of_word = false; paths = new_paths () }
 let chars_of_string s = s |> String.to_seq |> List.of_seq
 
 let insert s root =
-  let next_node ch { paths; _ } =
+  let next_node ch paths =
     let index = char_index ch in
     match paths.(index) with
     | Some node -> node
@@ -25,15 +25,15 @@ let insert s root =
   in
   let rec ins root = function
     | [] -> root.end_of_word <- true
-    | ch :: chars -> ins (next_node ch root) chars
+    | ch :: chars -> ins (next_node ch root.paths) chars
   in
   chars_of_string s |> ins root
 
 let rec lookup chars node =
-  match (chars, node) with
-  | [], { end_of_word; _ } -> Some end_of_word
+  match chars with
+  | [] -> Some node.end_of_word
   (* TODO: Add comments, a value like `Some false` is confusing. *)
-  | ch :: chars, { paths; _ } -> paths.(char_index ch) >>= lookup chars
+  | ch :: chars -> node.paths.(char_index ch) >>= lookup chars
 
 let search text root =
   lookup (chars_of_string text) root |> Option.value ~default:false
