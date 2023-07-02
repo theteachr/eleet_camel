@@ -1,11 +1,67 @@
 open Stdplus.Infix
 
+let char_index ch = Char.code ch - Char.code 'a'
+
+type trie_node =
+  { mutable ends : bool
+  ; paths : trie_node option array
+  }
+
+let new_paths () = Array.make 26 None
+
+let new_node () = { ends = false; paths = new_paths () }
+
+let chars_of_string s = s |> String.to_seq |> List.of_seq
+
+let insert s root =
+  let next_node ch { paths; _ } =
+    let index = char_index ch in
+    match paths.(index) with
+    | Some node -> node
+    | None ->
+        let node = new_node () in
+        paths.(index) <- Some node;
+        node
+  in
+  let rec ins root = function
+    | [] -> root.ends <- true
+    | ch :: chs -> ins (next_node ch root) chs
+  in
+  chars_of_string s |> ins root
+
+let search text root =
+  let rec exists chs node =
+    match (chs, node) with
+    | [], { ends; _ } -> ends
+    | ch :: chs, { paths; _ } ->
+        paths.(char_index ch)
+        |> Option.map (exists chs)
+        |> Option.value ~default:false
+  in
+  exists (chars_of_string text) root
+
+let starts_with prefix root =
+  let rec is_prefix chs node =
+    match (chs, node) with
+    | [], _ -> true
+    | ch :: chs, { paths; _ } ->
+        paths.(char_index ch)
+        |> Option.map (is_prefix chs)
+        |> Option.value ~default:false
+  in
+  is_prefix (chars_of_string prefix) root
+
 module Command = struct
   type t =
     | New
     | Insert of string
     | Search of string
     | Starts_with of string
+
+  type out =
+    | Empty of trie_node
+    | Unit
+    | Boolean of bool
 
   let of_string line =
     match String.split_on_char ':' line with
@@ -14,62 +70,41 @@ module Command = struct
     | [ "search"; s ] -> Some (Search s)
     | [ "startsWith"; s ] -> Some (Starts_with s)
     | _ -> None
-end
 
-let char_index c = Char.code c - Char.code 'a'
-
-module Prefix_tree = struct
-  type t =
-    { ends : bool
-    ; paths : t option array
-    }
-
-  let empty_paths = Array.make 26 None
-
-  let empty = { ends = false; paths = empty_paths }
-
-  let insert s tree =
-    let rec ins chars tree =
-      match (tree, chars) with
-      | ({ paths; _ } as node), c :: [] ->
-          let idx = char_index c in
-          let path_node =
-            try Array.get paths idx with Invalid_argument _ -> Some empty
-          in
-          Array.set paths idx { path_node with ends = true };
-          node
-      | ({ paths; _ } as node), c :: cs ->
-          let new_node = ins cs empty in
-          Array.set paths (char_index c) (Some new_node);
-          node
-      | node, [] -> node
-    in
-    ins (s |> String.to_seq |> List.of_seq) tree
-
-  let search _ _ = false
-
-  let starts_with _ _ = false
+  let execute cmd trie =
+    match cmd with
+    | New -> Empty (new_node ())
+    | Insert s ->
+        insert s trie;
+        Unit
+    | Search s -> Boolean (search s trie)
+    | Starts_with s -> Boolean (starts_with s trie)
 end
 
 type input = Command.t list
 
-type cmd_out =
-  | Unit
-  | Boolean of bool
-
-type output = cmd_out list 
-
-let parse lines =
-  String.split_on_char '\n' lines
-  |> List.map (Option.get << Command.of_string)
+type output = Command.out list
 
 let string_of_cmd_out = function
-  | Unit -> "()"
-  | Boolean b -> Bool.to_string b
+  | Command.Unit | Command.Empty _ -> "()"
+  | Command.Boolean b -> Bool.to_string b
+
+let parse lines =
+  String.split_on_char '\n' lines |> List.map (Option.get << Command.of_string)
 
 let to_string cmd_outs =
   cmd_outs
   |> List.map string_of_cmd_out
   |> String.concat " "
 
-let solve _ = [Unit; Unit; Boolean false]
+let solve commands =
+  let run (trie, outputs) cmd =
+    let out = Command.execute cmd trie in
+    let updated_trie =
+      match out with
+      | Empty trie -> trie
+      | Unit | Boolean _ -> trie
+    in
+    (updated_trie, out :: outputs)
+  in
+  List.fold_left run (new_node (), []) commands |> snd |> List.rev
