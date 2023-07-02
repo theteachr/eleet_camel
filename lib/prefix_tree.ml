@@ -32,6 +32,7 @@ let insert s root =
 let rec lookup chars node =
   match (chars, node) with
   | [], { end_of_word; _ } -> `Success end_of_word
+  (* XXX: A value like `Success false is extremely confusing. *)
   | ch :: chars, { paths; _ } ->
       paths.(char_index ch)
       |> Option.map (lookup chars)
