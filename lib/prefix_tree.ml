@@ -31,22 +31,15 @@ let insert s root =
 
 let rec lookup chars node =
   match (chars, node) with
-  | [], { end_of_word; _ } -> `Success end_of_word
-  (* XXX: A value like `Success false is extremely confusing. *)
-  | ch :: chars, { paths; _ } ->
-      paths.(char_index ch)
-      |> Option.map (lookup chars)
-      |> Option.value ~default:`Failure
+  | [], { end_of_word; _ } -> Some end_of_word
+  (* TODO: Add comments, a value like `Some false` is confusing. *)
+  | ch :: chars, { paths; _ } -> paths.(char_index ch) >>= lookup chars
 
 let search text root =
-  match lookup (chars_of_string text) root with
-  | `Success end_of_word -> end_of_word
-  | `Failure -> false
+  lookup (chars_of_string text) root |> Option.value ~default:false
 
 let starts_with prefix root =
-  match lookup (chars_of_string prefix) root with
-  | `Success _ -> true
-  | `Failure -> false
+  lookup (chars_of_string prefix) root |> Option.is_some
 
 module Command = struct
   type t =
