@@ -12,14 +12,16 @@ let new_node () = { end_of_word = false; paths = Array.make 26 None }
 let chars_of_string s = s |> String.to_seq |> List.of_seq
 
 let insert s root =
+  let set_new_node index paths =
+    let node = new_node () in
+    paths.(index) <- Some node;
+    node
+  in
   let next_node ch paths =
     let index = char_index ch in
     match paths.(index) with
     | Some node -> node
-    | None ->
-        let node = new_node () in
-        paths.(index) <- Some node;
-        node
+    | None -> set_new_node index paths
   in
   let rec ins root = function
     | [] -> root.end_of_word <- true
