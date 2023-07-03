@@ -7,9 +7,7 @@ type trie_node =
   ; paths : trie_node option array
   }
 
-let new_paths () = Array.make 26 None
-
-let new_node () = { end_of_word = false; paths = new_paths () }
+let new_node () = { end_of_word = false; paths = Array.make 26 None }
 
 let chars_of_string s = s |> String.to_seq |> List.of_seq
 
