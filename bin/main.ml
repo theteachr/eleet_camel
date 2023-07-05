@@ -25,6 +25,7 @@ let solvers : (string * (module Solution)) list =
   ; ("150", (module Rpn))
   ; ("2", (module Add_two))
   ; ("208", (module Prefix_tree))
+  ; ("198", (module House_robber))
   ]
 
 (* This shadowing is done to avoid module type inference complications. *)
