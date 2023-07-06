@@ -1,0 +1,14 @@
+ABCCED
+A B C E
+S F C S
+A D E E
+---
+SEE
+A B C E
+S F C S
+A D E E
+---
+ABCB
+A B C E
+S F C S
+A D E E
