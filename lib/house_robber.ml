@@ -8,7 +8,7 @@ let to_string = Int.to_string
 
 let rec rob pp p = function
   | [] -> p
-  | [ h ] -> pp + h
+  | [ h ] -> Int.max (pp + h) p
   | [ h1; h2 ] -> Int.max (h1 + pp) (h2 + p) |> Int.max (h2 + pp)
   | h1 :: h2 :: houses -> rob (h1 + pp) (h2 + p) houses
 
