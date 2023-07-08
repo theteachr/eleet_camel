@@ -22,7 +22,8 @@ jobs:
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      - run: opam install . --deps-only
       - name: Execute `eleet_camel`
-        run: dune exec eleet_camel
+        run: opam exec -- dune exec eleet_camel
       - name: Check for diffs in the `tests` directory
         run: git diff tests
