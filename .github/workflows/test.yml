@@ -24,9 +24,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      # Execute the project and check for diffs in the `tests` directory
-      - name: Run a multi-line script
-        run: |
-          echo "Executing \`eleet_camel\`..."
-          git diff tests
+      
+      - name: Set-up OCaml ${{ matrix.ocaml-compiler }}
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      # Execute the project
+      - name: Execute `eleet_camel`
+        run: dune exec eleet_camel
+      
+      - name: Check for diffs in the `tests` directory
+        run: git diff tests
