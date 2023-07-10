@@ -40,11 +40,14 @@ touch tests/1/tests.txt
 Add some inputs.
 
 ```
-4 3 1 5
-6 8 0 1
+2 7 11 15
+9
 ---
-1 0
-4 5 7
+3 2 4
+6
+---
+3 3
+6
 ```
 
 Create the file for outputs.
@@ -56,9 +59,11 @@ touch tests/1/expected.txt
 Add expected outputs.
 
 ```
-0 2 2 6
+0 1
 ---
-5 5 7
+1 2
+---
+0 1
 ```
 
 ### Writing a Solution
