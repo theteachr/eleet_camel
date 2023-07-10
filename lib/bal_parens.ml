@@ -1,16 +1,16 @@
 open Stdplus.Infix
 
-type bracket =
-  | Round
-  | Curly
-  | Square
+module Bracket = struct
+  type shape =
+    | Round
+    | Curly
+    | Square
 
-type opening_bracket = Opening of bracket
+  type opening = Opening of shape
 
-module Bracket_state = struct
   type t =
-    | Open of bracket
-    | Close of bracket
+    | Open of shape
+    | Close of shape
 
   let of_char = function
     | '(' -> Some (Open Round)
@@ -22,7 +22,7 @@ module Bracket_state = struct
     | _ -> None
 end
 
-type input = Bracket_state.t list
+type input = Bracket.t list
 
 type output = bool
 
@@ -30,12 +30,12 @@ let parse line =
   line
   |> String.to_seq
   |> List.of_seq
-  |> List.map (Option.get << Bracket_state.of_char)
+  |> List.map (Option.get << Bracket.of_char)
 
 let to_string = Bool.to_string
 
 let rec balanced st brackets =
-  let open Bracket_state in
+  let open Bracket in
   match (brackets, st) with
   | [], [] -> true
   | Open b :: bs, _ -> balanced (Opening b :: st) bs
