@@ -79,7 +79,7 @@ Add expected outputs.
 Make the `.ml` file created as part of _registration_ satisfy the following contract.
 
 - `type input`: Specify the type of input the main algorithm (`solve`) takes.
-- `type output`: Specify the type output by the main algorithm.
+- `type output`: Specify the type of output by the main algorithm.
 - `val to_string : output -> string`: Provide a function to represent the `output` as a `string`.
 - `val parse : string -> input`: Provide a function to convert the test read as a `string` into `input`.
 - `val solve : intput -> output`: Write the core algorithm.
