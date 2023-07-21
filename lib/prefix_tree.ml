@@ -29,17 +29,17 @@ let insert s root =
   in
   chars_of_string s |> ins root
 
-let rec lookup chars node =
+let rec advance chars node =
   match chars with
-  | [] -> Some node.end_of_word
-  (* TODO: Add comments, a value like `Some false` is confusing. *)
-  | ch :: chars -> node.paths.(char_index ch) >>= lookup chars
+  | [] -> Some node
+  | ch :: chars -> node.paths.(char_index ch) >>= advance chars
 
 let search text root =
-  lookup (chars_of_string text) root |> Option.value ~default:false
+  advance (chars_of_string text) root
+  |> Option.fold ~none:false ~some:(fun node -> node.end_of_word)
 
 let starts_with prefix root =
-  lookup (chars_of_string prefix) root |> Option.is_some
+  advance (chars_of_string prefix) root |> Option.is_some
 
 module Command = struct
   type t =
