@@ -1,4 +1,4 @@
-open Stdplus.Lists
+open Stdplus
 
 type input = int list * int
 
@@ -25,4 +25,4 @@ let solve (nums, target) =
       end
     | [] -> failwith "The problem statement lied"
   in
-  find_index_pair Index_map.empty (enumerate nums)
+  find_index_pair Index_map.empty (List.enumerate nums)
