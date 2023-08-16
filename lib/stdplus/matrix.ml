@@ -25,3 +25,14 @@ let print m = Array.iter print_row m.items
 
 let update (row, col) value m =
   m.items.(row).(col) <- value
+
+let get_index value row : int option =
+  row
+  |> Array.mapi (fun i v -> (i, v))
+  |> Array.find_map (fun (i, v) -> if value = v then Some i else None)
+
+let find (value : 'a) (m : 'a t) : (int * int) option =
+  m.items
+  |> Array.mapi (fun i row -> (i, row))
+  |> Array.find_map (fun (i, row) ->
+         get_index value row |> Option.map (fun j -> (i, j)))

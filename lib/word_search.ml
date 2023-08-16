@@ -1,10 +1,15 @@
 open Stdplus
 
-type input = char list * char Matrix.t
+type 'a cell = Visited of 'a | Unvisited of 'a
+
+type input = char list * char cell Matrix.t
 
 type output = bool
 
 let char_of_string s = String.get s 0
+
+let string_of_char_list chars =
+  chars |> List.map (String.make 1) |> String.concat ""
 
 let parse text =
   let word, board =
@@ -13,9 +18,19 @@ let parse text =
     | [] -> failwith "Bad input"
   in
   ( word |> String.to_seq |> List.of_seq
-  , board |> Matrix.of_list |> Matrix.map char_of_string )
+  , board |> Matrix.of_list |> Matrix.map (fun s -> Unvisited (char_of_string s)) )
 
 let to_string = Bool.to_string
+
+let is_valid (row_max, col_max) (row, col) =
+  [ row >= 0; row < row_max; col >= 0; col < col_max ] |> List.for_all Fun.id
+
+let print_point_line (row, col) =
+  Printf.printf "(%d, %d)\n" row col
+
+let valid_neighbors board (row, col) =
+  [ (row, col + 1); (row + 1, col); (row, col - 1); (row - 1, col) ]
+  |> List.filter (is_valid board)
 
 let neighbors (row, col) =
   [ (row, col + 1); (row + 1, col); (row, col - 1); (row - 1, col) ]
@@ -23,21 +38,53 @@ let neighbors (row, col) =
 module Point = struct
   type t = int * int
 
-  let compare (x1, y1) (x2, y2) = (x1 - x2) + (y1 - y2)
+  let compare (x1, y1) (x2, y2) =
+    if x1 = x2 && y1 = y2 then 0 else (x1 - x2) * (y1 - y2)
+
+  let to_string (x, y) = Printf.sprintf "[%d, %d]" x y
 end
 
-module PointSet = Set.Make(Point)
+module PointSet = Set.Make (Point)
 
-(* A :: BCCED *)
-(* w :: ws *)
-let rec search (word : char list) (board : char Matrix.t) (visited : PointSet.t) (curr_point : Point.t) =
-  match (word, Matrix.at curr_point board) with
-  | [], _ -> true
-  | _ when PointSet.exists (( = ) curr_point) visited -> false
-  | w :: ws, Some c ->
-      let remainder = if w = c then ws else word in
-      let visited = PointSet.add curr_point visited in
-      neighbors curr_point |> List.map (search remainder board visited) |> List.exists Fun.id
-  | _ -> false
+(*
 
-let solve (word, board) = search word board PointSet.empty (0, 0)
+[ c ]
+
+[ [ b c ]
+; [ a e]
+]
+
+search [ c ] board 0.0
+
+*)
+
+let solve (word, board) =
+  let rec search (chars : char list) (board : char cell Matrix.t)
+      (point : Point.t) =
+    Printf.printf "Current point: %s\n" @@ Point.to_string point;
+    match (chars, Matrix.at point board) with
+    | [], _ -> true
+    | _, None ->
+        print_endline "The point is out of bounds";
+        false
+    | _, Some (Visited c) ->
+        Printf.printf "'%c' is already visited\n" c;
+        Matrix.update point (Unvisited c) board;
+        false
+    | input_char :: chars, Some (Unvisited board_char)
+      when input_char = board_char ->
+        Printf.printf "Input char: %c, Board char: %c\n" input_char board_char;
+        Matrix.update point (Visited input_char) board;
+        neighbors point |> List.map Point.to_string |> String.concat " "
+        |> print_endline;
+        neighbors point |> List.map (search chars board) |> List.exists Fun.id
+    | _, Some (Unvisited c) ->
+        Printf.printf "Non matching character: '%c'\n" c;
+        false
+  in
+  match word with
+  | [] -> false
+  | letter :: _ -> (
+      match Matrix.find (Unvisited letter) board with
+      | Some point -> search word board point
+      | None -> false)
