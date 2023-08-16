@@ -11,3 +11,5 @@ val dimensions : 'a t -> int * int
 val map : ('a -> 'b) -> 'a t -> 'b t
 
 val print : string t -> unit
+
+val update : int * int -> 'a -> 'a t -> unit

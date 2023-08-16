@@ -22,3 +22,6 @@ let print_row (row : string array) =
 let map f m = { m with items = Array.map (Array.map f) m.items }
 
 let print m = Array.iter print_row m.items
+
+let update (row, col) value m =
+  m.items.(row).(col) <- value
