@@ -12,3 +12,14 @@ ABCB
 A B C E
 S F C S
 A D E E
+---
+X
+Y
+---
+ABCDA
+A B
+D C
+---
+B
+B B
+B B
