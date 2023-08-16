@@ -1,4 +1,4 @@
-open Stdplus.Lists
+open Stdplus
 
 type input = int list
 
@@ -28,7 +28,7 @@ let build_knowledge nums =
     in
     (Int.max occ.count degree, Occurrences.add n occ occs)
   in
-  List.fold_left update_degree_and_occs (0, Occurrences.empty) (enumerate nums)
+  List.fold_left update_degree_and_occs (0, Occurrences.empty) (List.enumerate nums)
 
 let print_entry n value =
   let { first_at; last_at; count } = value in

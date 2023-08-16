@@ -1,5 +1,5 @@
 open Stdplus.Infix
-open Stdplus.Lists
+open Stdplus
 
 type input = int list * int list
 
@@ -25,7 +25,7 @@ let solve (l_one, l_two) =
     let c, units_digit = sum /% 10 in
     (c, units_digit :: sums)
   in
-  let zipped = zip_longest l_one l_two ~default:0 in
+  let zipped = List.zip_longest l_one l_two ~default:0 in
   let carry, sums = List.fold_left add_with_carry (0, []) zipped in
   let sums = if carry = 1 then 1 :: sums else sums in
   List.rev sums
