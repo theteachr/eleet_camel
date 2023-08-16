@@ -83,8 +83,8 @@ let solve (word, board) =
         false
   in
   match word with
+  | letter :: _ ->
+      Matrix.find_all (Unvisited letter) board
+      |> List.rev_map (search word board)
+      |> List.exists Fun.id
   | [] -> false
-  | letter :: _ -> (
-      match Matrix.find (Unvisited letter) board with
-      | Some point -> search word board point
-      | None -> false)
