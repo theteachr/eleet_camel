@@ -23,3 +23,17 @@ D C
 B
 B B
 B B
+---
+FCEESECBASAD
+A B C E
+S F C S
+A D E E
+---
+CFDECS
+A B C E
+S F C S
+A D E E
+---
+AB
+A C
+D B
