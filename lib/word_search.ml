@@ -17,7 +17,7 @@ let char_of_string s = String.get s 0
 let string_of_char_list chars =
   chars |> List.map (String.make 1) |> String.concat ""
 
-let parse text : input =
+let parse text =
   let chars, board =
     match String.split_on_char '\n' text with
     | word :: board -> (word, List.map (String.split_on_char ' ') board)
@@ -31,8 +31,6 @@ let to_string = Bool.to_string
 let neighbors (row, col) =
   [ (row, col + 1); (row + 1, col); (row, col - 1); (row - 1, col) ]
   |> List.to_seq
-
-type point = int * int
 
 let solve (word, board) =
   let rec search chars board loc =
