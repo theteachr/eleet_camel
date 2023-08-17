@@ -1,4 +1,5 @@
 open Eleet_camel
+open Stdplus.Infix
 
 module type Solution = sig
   type input
@@ -32,49 +33,33 @@ let solvers : (string * (module Solution)) list =
 (* This shadowing is done to avoid module type inference complications. *)
 let solvers = solvers |> string_map_of_pairs
 
-let new_line = "\n"
+let test_seperator = "\n---\n\n"
 
-let test_seperator = "---" ^ new_line
+let solution_separator = "===\n"
 
-let expected_file = "expected.txt"
+let tests_file = Printf.sprintf "tests/%s.txt"
 
-let tests_file = Printf.sprintf "tests/%s/tests.txt"
-
-let load_tests problem_id =
-  In_channel.(with_open_text (tests_file problem_id) input_all)
+let load_tests_from_file f =
+  In_channel.(with_open_text f input_all)
   |> Str.(split @@ regexp test_seperator)
-  |> List.map String.trim
+  |> List.map (List.hd << Str.(split @@ regexp solution_separator))
 
-let run_solutions tests (module Solver : Solution) =
-  let get_solution_string test =
-    let sol_str =
-      test
-      |> Solver.parse
-      |> Solver.solve
-      |> Solver.to_string
-    in
-    sol_str ^ new_line
-  in
-  tests
-  |> List.map get_solution_string
-  |> String.concat test_seperator
+let get_solved_entry (module Solver : Solution) test =
+  let sol = Solver.(String.trim test |> parse |> solve |> to_string) in
+  test ^ solution_separator ^ sol ^ "\n"
 
 let () =
-  let output_file_solution (problem_id, solver) =
-    let tests = load_tests problem_id in
-    let solutions = run_solutions tests solver in
-    let solutions_file =
-      let tests_dir = Filename.dirname (tests_file problem_id) in
-      Filename.concat tests_dir expected_file
+  let out_file_content (problem_id, solver) =
+    let out_file = tests_file problem_id in
+    let content =
+      load_tests_from_file out_file
+      |> List.map (get_solved_entry solver)
+      |> String.concat test_seperator
     in
-    (solutions_file, solutions)
+    (out_file, content)
   in
-  let write_solution (file, answer) =
-    let open Out_channel in
-    let out_channel = open_text file in
-    output_string out_channel answer
+  let write_actual (file, new_entry) =
+    Out_channel.(output_string (open_text file) new_entry)
   in
-  solvers
-  |> Solutions.bindings
-  |> List.map output_file_solution
-  |> List.iter write_solution
+  solvers |> Solutions.bindings |> List.map out_file_content
+  |> List.iter write_actual
