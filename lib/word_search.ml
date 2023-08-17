@@ -38,8 +38,6 @@ let solve (word, board) =
       (loc : point) =
     match (chars, Matrix.at loc board) with
     | [], _ -> true
-    | _, None -> false
-    | _, Some Visited -> false
     | input_char :: chars, Some (Unvisited board_char)
       when input_char = board_char ->
         Matrix.update loc Cell.Visited board;
