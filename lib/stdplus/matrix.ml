@@ -44,8 +44,10 @@ let find (value : 'a) (m : 'a t) : (int * int) option =
   |> Array.mapi (fun i row -> (i, get_index value row))
   |> Array.find_map (fun (i, row) -> Option.map (fun j -> (i, j)) row)
 
-let find_all value m : (int * int) list =
+let find_all value m : (int * int) Seq.t =
   m.items
   |> Array.mapi (fun i row -> get_index_all value row |> List.map (fun j -> (i, j)))
   |> Array.to_list
-  |> List.concat
+  |> List.flatten
+  |> List.to_seq
+

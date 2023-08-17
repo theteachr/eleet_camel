@@ -30,6 +30,7 @@ let to_string = Bool.to_string
 
 let neighbors (row, col) =
   [ (row, col + 1); (row + 1, col); (row, col - 1); (row - 1, col) ]
+  |> List.to_seq
 
 type point = int * int
 
@@ -40,12 +41,12 @@ let solve (word, board) =
     | input_char :: chars, Some (Cell.Unvisited board_char)
       when input_char = board_char ->
         Matrix.update loc Cell.Visited board;
-        neighbors loc |> List.map (search chars board) |> List.any
+        neighbors loc |> Seq.map (search chars board) |> Seq.any
     | _ -> false
   in
   match word with
   | letter :: _ ->
       Matrix.find_all letter board
-      |> List.rev_map (search word @@ Matrix.map Cell.unvisited board)
-      |> List.any
+      |> Seq.map (search word @@ Matrix.map Cell.unvisited board)
+      |> Seq.any
   | [] -> false

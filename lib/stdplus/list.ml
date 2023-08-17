@@ -10,5 +10,3 @@ let zip_longest l_one l_two ~default =
     | [], y :: ys -> zip ((default, y) :: pairs) ([], ys)
   in
   zip [] (l_one, l_two)
-
-let any = Stdlib.List.exists Fun.id
