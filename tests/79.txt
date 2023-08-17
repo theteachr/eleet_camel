@@ -2,38 +2,72 @@ ABCCED
 A B C E
 S F C S
 A D E E
+===
+true
+
 ---
+
 SEE
 A B C E
 S F C S
 A D E E
+===
+true
+
 ---
+
 ABCB
 A B C E
 S F C S
 A D E E
+===
+false
+
 ---
+
 X
 Y
+===
+false
+
 ---
+
 ABCDA
 A B
 D C
+===
+false
+
 ---
+
 B
 B B
 B B
+===
+true
+
 ---
+
 FCEESECBASAD
 A B C E
 S F C S
 A D E E
+===
+true
+
 ---
+
 CFDECS
 A B C E
 S F C S
 A D E E
+===
+false
+
 ---
+
 AB
 A C
 D B
+===
+false

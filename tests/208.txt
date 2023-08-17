@@ -5,3 +5,5 @@ search:app
 startsWith:app
 insert:app
 search:app
+===
+() () true false true () true
