@@ -11,7 +11,7 @@ dune exec eleet_camel
 runs all solutions against all test cases. In case of wrong solutions, you'll
 see a diff in the `tests` directory.
 
-## Adding Problems and Writing Solutions
+## Adding Problems
 
 ### Setting Up Tests
 
@@ -56,15 +56,15 @@ Add test cases.
 0 1
 ```
 
-### Writing a Solution
+## Writing a Solution
 
-#### Registering an Implementation
+### Registering an Implementation
 
 - Create a(n) `.ml` file inside `lib`.
 - Add it as a module in the `solvers` list defined in `main.ml`.
   - The list entry should be in the form `("<problem_number>", module <Name>)`.
 
-#### Implementation
+### Implementation
 
 Make the `.ml` file created as part of _registration_ satisfy the following contract.
 
