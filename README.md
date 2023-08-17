@@ -1,6 +1,6 @@
 # Eleet Camel
 
-A collection of solutions to LeetCode problems in OCaml.
+A collection of solutions to LeetCode challenges in OCaml.
 
 ## Running
 
@@ -11,13 +11,13 @@ dune exec eleet_camel
 runs all solutions against all test cases. In case of wrong solutions, you'll
 see a diff in the `tests` directory.
 
-## Adding Problems
+## Adding Challenges
 
 ### Setting Up Tests
 
 - [ ] Automate this
 
-- Create a `.txt` file inside `tests` named after the problem number on
+- Create a `.txt` file inside `tests` named after the challenge number on
 LeetCode.
 - Separate each test case by `\n---\n`.
 - Add expected output for each test case, where the test and answer are
@@ -25,7 +25,7 @@ separated by `===`.
 
 #### Example
 
-Writing tests for problem `1` on LeetCode.
+Writing tests for challenge `1` on LeetCode.
 
 Create the file.
 
@@ -62,7 +62,7 @@ Add test cases.
 
 - Create a(n) `.ml` file inside `lib`.
 - Add it as a module in the `solvers` list defined in `main.ml`.
-  - The list entry should be in the form `("<problem_number>", module <Name>)`.
+  - The list entry should be in the form `("<challenge number>", module <Name>)`.
 
 ### Implementation
 
