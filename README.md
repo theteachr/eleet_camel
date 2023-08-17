@@ -15,54 +15,44 @@ see a diff in the `tests` directory.
 
 ### Setting Up Tests
 
-- Create a directory (`d`) inside `tests` named after the problem number on LeetCode.
-- Create `tests.txt` in `d`.
-  - Add inputs separated by `---`.
-- Create `expected.txt` in `d`.
-  - Add expected outputs for inputs in `tests.txt`. Outputs should be separated by `---`.
+- [ ] Automate this
+
+- Create a `.txt` file inside `tests` named after the problem number on
+LeetCode.
+- Separate each test case by `\n---\n`.
+- Add expected output for each test case, where the test and answer are
+separated by `===`.
 
 #### Example
 
 Writing tests for problem `1` on LeetCode.
 
-Create the directory.
+Create the file.
 
 ```bash
-mkdir tests/1
+mkdir tests/1.txt
 ```
 
-Create the file for inputs.
-
-```bash
-touch tests/1/tests.txt
-```
-
-Add some inputs.
+Add test cases.
 
 ```
 2 7 11 15
 9
+===
+0 1
+
 ---
+
 3 2 4
 6
+===
+1 2
+
 ---
+
 3 3
 6
-```
-
-Create the file for outputs.
-
-```bash
-touch tests/1/expected.txt
-```
-
-Add expected outputs.
-
-```
-0 1
----
-1 2
----
+===
 0 1
 ```
 
@@ -78,8 +68,11 @@ Add expected outputs.
 
 Make the `.ml` file created as part of _registration_ satisfy the following contract.
 
-- `type input`: Specify the type of input the main algorithm (`solve`) takes.
-- `type output`: Specify the type of output returned by `solve` (the main algorithm).
-- `val to_string : output -> string`: Provide a function to represent the `output` as a `string`.
-- `val parse : string -> input`: Provide a function to convert the test read as a `string` into `input`.
+- `type input`: Specify the type of input to the main algorithm (`solve`).
+- `type output`: Specify the type of output returned by the main algorithm
+(`solve`).
+- `val to_string : output -> string`: Provide a function to convert the
+`output` to a `string`.
+- `val parse : string -> input`: Provide a function to convert the test (read as
+a `string`) into `input`.
 - `val solve : intput -> output`: Write the core algorithm.
