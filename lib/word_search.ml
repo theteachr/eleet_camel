@@ -34,11 +34,10 @@ let neighbors (row, col) =
 type point = int * int
 
 let solve (word, board) =
-  let rec search (chars : char list) (board : char Cell.t Matrix.t)
-      (loc : point) =
+  let rec search chars board loc =
     match (chars, Matrix.at loc board) with
     | [], _ -> true
-    | input_char :: chars, Some (Unvisited board_char)
+    | input_char :: chars, Some (Cell.Unvisited board_char)
       when input_char = board_char ->
         Matrix.update loc Cell.Visited board;
         neighbors loc |> List.map (search chars board) |> List.any
