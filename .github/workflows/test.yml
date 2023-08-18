@@ -3,8 +3,12 @@ name: Continuous Testing
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - **/*.ml
   pull_request:
     branches: [ "main" ]
+    paths:
+      - **/*.ml
 
   workflow_dispatch:
 
