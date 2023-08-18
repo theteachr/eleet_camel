@@ -4,11 +4,11 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - **/*.ml
+      - '**.ml'
   pull_request:
     branches: [ "main" ]
     paths:
-      - **/*.ml
+      - '**.ml'
 
   workflow_dispatch:
 
