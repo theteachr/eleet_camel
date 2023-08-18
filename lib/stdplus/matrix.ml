@@ -1,3 +1,5 @@
+open Infix
+
 type 'a t =
   { items : 'a array array
   ; dimensions : int * int
@@ -6,7 +8,7 @@ type 'a t =
 let of_list l =
   let items = Array.of_list l |> Array.map Array.of_list in
   let num_rows = List.length l in
-  let num_cols = List.(length (hd l)) in
+  let num_cols = try List.(length (hd l)) with Failure _ -> 0 in
   { items; dimensions = (num_rows, num_cols) }
 
 let at (row, col) m =
@@ -51,3 +53,7 @@ let find_all value m : (int * int) Seq.t =
   |> List.flatten
   |> List.to_seq
 
+let from_string parse lines : 'a t =
+  String.split_on_char '\n' lines
+  |> List.map (List.map parse << String.split_on_char ' ')
+  |> of_list
