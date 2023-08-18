@@ -30,7 +30,7 @@ Writing tests for challenge `1` on LeetCode.
 Create the file.
 
 ```bash
-mkdir tests/1.txt
+touch tests/1.txt
 ```
 
 Add test cases.
