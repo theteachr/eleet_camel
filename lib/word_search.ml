@@ -1,13 +1,5 @@
 open Stdplus
 
-module Cell = struct
-  type 'a t =
-    | Visited
-    | Unvisited of 'a
-
-  let unvisited x = Unvisited x
-end
-
 type input = char list * char Matrix.t
 
 type output = bool

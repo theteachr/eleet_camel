@@ -42,14 +42,6 @@ module Point = struct
     | Left -> (row, col + 1)
 end
 
-module Cell = struct
-  type 'a t =
-    | Visited
-    | Unvisited of 'a
-
-  let unvisited x = Unvisited x
-end
-
 let solve matrix =
   let matrix = Matrix.map Cell.unvisited matrix in
   let rec spiral visited moving loc =
