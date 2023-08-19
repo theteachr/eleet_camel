@@ -1,6 +1,7 @@
 open Stdplus
+open Stdplus.Infix
 
-type input = char list * char Matrix.t
+type input = char list * char Cell.t Matrix.t
 
 type output = bool
 
@@ -16,7 +17,7 @@ let parse text =
     | [] -> failwith "Bad input"
   in
   ( chars |> String.to_seq |> List.of_seq
-  , board |> Matrix.of_list |> Matrix.map char_of_string )
+  , board |> Matrix.of_list |> Matrix.map (Cell.unvisited << char_of_string) )
 
 let to_string = Bool.to_string
 
@@ -25,18 +26,18 @@ let neighbors (row, col) =
   |> List.to_seq
 
 let solve (word, board) =
-  let rec search chars board loc =
+  let rec search chars loc =
     match (chars, Matrix.at loc board) with
     | [], _ -> true
     | input_char :: chars, Some (Cell.Unvisited board_char)
       when input_char = board_char ->
         Matrix.update loc Cell.Visited board;
-        neighbors loc |> Seq.map (search chars board) |> Seq.any
+        neighbors loc |> Seq.map (search chars) |> Seq.any
     | _ -> false
   in
   match word with
   | letter :: _ ->
-      Matrix.find_all letter board
-      |> Seq.map (search word @@ Matrix.map Cell.unvisited board)
+      Matrix.find_all (Cell.Unvisited letter) board
+      |> Seq.map (search word)
       |> Seq.any
   | [] -> false
