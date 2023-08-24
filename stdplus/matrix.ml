@@ -19,7 +19,7 @@ let print m = Array.iter print_row m
 
 let update (row, col) value m = m.(row).(col) <- value
 
-let get_index value row : int option =
+let get_index value row =
   row
   |> Array.mapi (fun i v -> (i, v))
   |> Array.find_map (fun (i, v) -> if value = v then Some i else None)
@@ -30,18 +30,20 @@ let get_index_all value row : int list =
   |> List.enumerate
   |> List.filter_map (fun (i, x) -> if value = x then Some i else None)
 
-let find (value : 'a) (m : 'a t) : (int * int) option =
+let find value m =
   m
   |> Array.mapi (fun i row -> (i, get_index value row))
   |> Array.find_map (fun (i, row) -> Option.map (fun j -> (i, j)) row)
 
-let find_all value m : (int * int) list =
+let find_all value m =
   m
-  |> Array.mapi (fun i row ->
+  |> Array.to_list
+  |> List.enumerate
+  |> List.rev_map (fun (i, row) ->
          get_index_all value row |> List.rev_map (fun j -> (i, j)))
-  |> Array.to_list |> List.concat
+  |> List.concat
 
-let from_string parse lines : 'a t =
+let from_string parse lines =
   String.split_on_char '\n' lines
   |> List.map (List.map parse << String.split_on_char ' ')
   |> of_list
