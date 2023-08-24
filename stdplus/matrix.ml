@@ -33,24 +33,24 @@ let get_index value row : int option =
   |> Array.mapi (fun i v -> (i, v))
   |> Array.find_map (fun (i, v) -> if value = v then Some i else None)
 
-let get_index_all value row : int Seq.t =
+let get_index_all value row : int list =
   let rec get_indices found = function
     | [] -> found
-    | (i, x) :: pairs when x = value -> get_indices (Seq.cons i found) pairs
+    | (i, x) :: pairs when x = value -> get_indices (i :: found) pairs
     | _ :: xs -> get_indices found xs
   in
-  get_indices Seq.empty (row |> Array.mapi (fun i v -> (i, v)) |> Array.to_list)
+  get_indices [] (row |> Array.mapi (fun i v -> (i, v)) |> Array.to_list)
 
 let find (value : 'a) (m : 'a t) : (int * int) option =
   m.items
   |> Array.mapi (fun i row -> (i, get_index value row))
   |> Array.find_map (fun (i, row) -> Option.map (fun j -> (i, j)) row)
 
-let find_all value m : (int * int) Seq.t =
+let find_all value m : (int * int) list =
   m.items
-  |> Array.to_seq
-  |> Seq.mapi (fun i row -> get_index_all value row |> Seq.map (fun j -> (i, j)))
-  |> Seq.concat
+  |> Array.mapi (fun i row -> get_index_all value row |> List.map (fun j -> (i, j)))
+  |> Array.to_list
+  |> List.concat
 
 let from_string parse lines : 'a t =
   String.split_on_char '\n' lines

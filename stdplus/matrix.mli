@@ -16,6 +16,6 @@ val update : int * int -> 'a -> 'a t -> unit
 
 val find : 'a -> 'a t -> (int * int) option
 
-val find_all : 'a -> 'a t -> (int * int) Seq.t
+val find_all : 'a -> 'a t -> (int * int) list
 
 val from_string : (string -> 'a) -> string -> 'a t
