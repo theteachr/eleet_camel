@@ -25,12 +25,10 @@ let get_index value row : int option =
   |> Array.find_map (fun (i, v) -> if value = v then Some i else None)
 
 let get_index_all value row : int list =
-  let rec get_indices found = function
-    | [] -> found
-    | (i, x) :: pairs when x = value -> get_indices (i :: found) pairs
-    | _ :: xs -> get_indices found xs
-  in
-  get_indices [] (row |> Array.mapi (fun i v -> (i, v)) |> Array.to_list)
+  row
+  |> Array.to_list
+  |> List.enumerate
+  |> List.filter_map (fun (i, x) -> if value = x then Some i else None)
 
 let find (value : 'a) (m : 'a t) : (int * int) option =
   m
