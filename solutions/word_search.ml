@@ -32,7 +32,9 @@ let solve (word, board) =
     | input_char :: chars, Some (Cell.Unvisited board_char)
       when input_char = board_char ->
         Matrix.update loc Cell.Visited board;
-        neighbors loc |> Seq.map (search chars) |> Seq.any
+        let found = neighbors loc |> Seq.map (search chars) |> Seq.any in
+        Matrix.update loc (Cell.Unvisited input_char) board;
+        found
     | _ -> false
   in
   match word with
