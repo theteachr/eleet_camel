@@ -1,32 +1,23 @@
 open Infix
 
-type 'a t =
-  { items : 'a array array
-  ; dimensions : int * int
-  }
+type 'a t = 'a array array
 
-let of_list l =
-  let items = Array.of_list l |> Array.map Array.of_list in
-  let num_rows = List.length l in
-  let num_cols = try List.(length (hd l)) with Failure _ -> 0 in
-  { items; dimensions = (num_rows, num_cols) }
+let of_list l = Array.of_list l |> Array.map Array.of_list
 
-let at (row, col) m =
-  try Some m.items.(row).(col) with Invalid_argument _ -> None
+let at (row, col) m = try Some m.(row).(col) with Invalid_argument _ -> None
 
-let at_exn (row, col) m = m.items.(row).(col)
+let at_exn (row, col) m = m.(row).(col)
 
-let dimensions m = m.dimensions
+let dimensions m = Array.(length m, length m.(0))
 
 let print_row (row : string array) =
   String.concat " " (Array.to_list row) |> print_endline
 
-let map f m = { m with items = Array.map (Array.map f) m.items }
+let map f m = Array.map (Array.map f) m
 
-let print m = Array.iter print_row m.items
+let print m = Array.iter print_row m
 
-let update (row, col) value m =
-  m.items.(row).(col) <- value
+let update (row, col) value m = m.(row).(col) <- value
 
 let get_index value row : int option =
   row
@@ -42,15 +33,15 @@ let get_index_all value row : int list =
   get_indices [] (row |> Array.mapi (fun i v -> (i, v)) |> Array.to_list)
 
 let find (value : 'a) (m : 'a t) : (int * int) option =
-  m.items
+  m
   |> Array.mapi (fun i row -> (i, get_index value row))
   |> Array.find_map (fun (i, row) -> Option.map (fun j -> (i, j)) row)
 
 let find_all value m : (int * int) list =
-  m.items
-  |> Array.mapi (fun i row -> get_index_all value row |> List.map (fun j -> (i, j)))
-  |> Array.to_list
-  |> List.concat
+  m
+  |> Array.mapi (fun i row ->
+         get_index_all value row |> List.rev_map (fun j -> (i, j)))
+  |> Array.to_list |> List.concat
 
 let from_string parse lines : 'a t =
   String.split_on_char '\n' lines
