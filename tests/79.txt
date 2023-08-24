@@ -71,3 +71,13 @@ A C
 D B
 ===
 false
+
+---
+
+AARDVARK
+H R D F
+B A V A
+J A K R
+X C L S
+===
+true
