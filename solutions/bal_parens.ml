@@ -8,19 +8,17 @@ module Bracket = struct
 
   type opening = Opening of shape
 
-  type state =
-    | Open
-    | Close
-
-  type t = state * shape
+  type t =
+    | Open of shape
+    | Close of shape
 
   let of_char = function
-    | '(' -> Some (Open, Round)
-    | '{' -> Some (Open, Curly)
-    | '[' -> Some (Open, Square)
-    | ')' -> Some (Close, Round)
-    | '}' -> Some (Close, Curly)
-    | ']' -> Some (Close, Square)
+    | '(' -> Some (Open Round)
+    | '{' -> Some (Open Curly)
+    | '[' -> Some (Open Square)
+    | ')' -> Some (Close Round)
+    | '}' -> Some (Close Curly)
+    | ']' -> Some (Close Square)
     | _ -> None
 end
 
@@ -40,8 +38,8 @@ let rec balanced st brackets =
   let open Bracket in
   match (brackets, st) with
   | [], [] -> true
-  | (Open, b) :: bs, _ -> balanced (Opening b :: st) bs
-  | (Close, b) :: bs, Opening b' :: bs' when b = b' -> balanced bs' bs
+  | Open b :: bs, _ -> balanced (Opening b :: st) bs
+  | Close b :: bs, Opening b' :: bs' when b = b' -> balanced bs' bs
   | _ -> false
 
 let solve = balanced []
