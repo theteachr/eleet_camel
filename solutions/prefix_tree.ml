@@ -1,4 +1,6 @@
-open Stdplus.Infix
+open Stdplus
+open Infix
+open Option.Infix
 
 let char_index ch = Char.code ch - Char.code 'a'
 

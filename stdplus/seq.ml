@@ -1,3 +1,4 @@
-include Stdlib.Seq
+open Stdlib
+include Seq
 
-let any = Stdlib.Seq.exists Fun.id
+let any = Seq.exists Fun.id
