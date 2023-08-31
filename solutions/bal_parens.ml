@@ -6,8 +6,6 @@ module Bracket = struct
     | Curly
     | Square
 
-  type opening = Opening of shape
-
   type t =
     | Open of shape
     | Close of shape
@@ -22,24 +20,23 @@ module Bracket = struct
     | _ -> None
 end
 
-type input = Bracket.t list
+type input = Bracket.t Seq.t
 
 type output = bool
 
 let parse line =
   line
   |> String.to_seq
-  |> List.of_seq
-  |> List.map (Option.get << Bracket.of_char)
+  |> Seq.map (Option.get << Bracket.of_char)
 
 let to_string = Bool.to_string
 
-let rec balanced st brackets =
+let rec balanced open_brackets brackets =
   let open Bracket in
-  match (brackets, st) with
-  | [], [] -> true
-  | Open b :: bs, _ -> balanced (Opening b :: st) bs
-  | Close b :: bs, Opening b' :: bs' when b = b' -> balanced bs' bs
+  match (open_brackets, Seq.uncons brackets) with
+  | [] , None -> true
+  | _, Some (Open b, bs) -> balanced (b :: open_brackets) bs
+  | b' :: bs', Some (Close b, bs) when b = b' -> balanced bs' bs
   | _ -> false
 
 let solve = balanced []
