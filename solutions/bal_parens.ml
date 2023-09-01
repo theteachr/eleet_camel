@@ -24,10 +24,7 @@ type input = Bracket.t Seq.t
 
 type output = bool
 
-let parse line =
-  line
-  |> String.to_seq
-  |> Seq.map Bracket.of_char_exn
+let parse line = line |> String.to_seq |> Seq.map Bracket.of_char_exn
 
 let to_string = Bool.to_string
 
