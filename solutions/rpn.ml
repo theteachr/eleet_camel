@@ -1,5 +1,3 @@
-open Stdplus.Infix
-
 module Op = struct
   type t =
     | Add
@@ -27,16 +25,18 @@ module Token = struct
 
   let num n = Num n
 
-  let of_string = function
-    | "+" -> Some (Op Op.Add)
-    | "-" -> Some (Op Op.Sub)
-    | "*" -> Some (Op Op.Mul)
-    | "/" -> Some (Op Op.Div)
-    | s -> int_of_string_opt s |> Option.map num
+  let of_string_exn = function
+    | "+" -> Op Op.Add
+    | "-" -> Op Op.Sub
+    | "*" -> Op Op.Mul
+    | "/" -> Op Op.Div
+    | s -> Num (int_of_string s)
+
+  let of_string s = try Some (of_string_exn s) with _ -> None
 end
 
 let parse line =
-  String.split_on_char ' ' line |> List.map (Option.get << Token.of_string)
+  String.split_on_char ' ' line |> List.map Token.of_string_exn
 
 type input = Token.t list
 
@@ -47,10 +47,10 @@ let to_string = function
   | None -> "Err..."
 
 let rec eval_rpn out tokens =
-  match (tokens, out) with
-  | [], [ x ] -> Some x
-  | Token.Num n :: ts, out -> eval_rpn (n :: out) ts
-  | Token.Op op :: ts, r :: l :: out -> eval_rpn ((Op.f op) l r :: out) ts
+  match (out, tokens) with
+  | [ x ], [] -> Some x
+  | out, Token.Num n :: ts -> eval_rpn (n :: out) ts
+  | r :: l :: out, Token.Op op :: ts -> eval_rpn ((Op.f op) l r :: out) ts
   | _ -> None
 
 let solve = eval_rpn []
