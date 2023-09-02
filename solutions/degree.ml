@@ -18,9 +18,14 @@ type occurrence =
 
 module Occurrences = Map.Make (Int)
 
-(* TODO: Explain *)
-let build_knowledge nums =
-  let update_degree_and_occs (degree, occs) (idx, n) =
+(** [build_occurrences nums] returns the most frequent number in [nums] and a
+    `Map` that goes from a number to its `occurrence` holding the following
+    information about it:
+    - the index at which it *first* occurred
+    - the index at which it *last* occurred
+    - the number of times it has occurred in [nums] *)
+let build_occurrences nums =
+  let update_degree_occs (degree, occs) (idx, n) =
     let occ =
       match Occurrences.find_opt n occs with
       | Some ({ count; _ } as v) -> { v with last_at = idx; count = count + 1 }
@@ -28,7 +33,8 @@ let build_knowledge nums =
     in
     (Int.max occ.count degree, Occurrences.add n occ occs)
   in
-  List.fold_left update_degree_and_occs (0, Occurrences.empty) (List.enumerate nums)
+  List.fold_left update_degree_occs (0, Occurrences.empty)
+    (List.enumerate nums)
 
 let print_entry n value =
   let { first_at; last_at; count } = value in
@@ -36,12 +42,12 @@ let print_entry n value =
   printf "%d: (first_at: %d, last_at: %d) [%d]\n" n first_at last_at count
 
 let solve test =
-  let degree, knowledge = build_knowledge test in
+  let degree, occurrences = build_occurrences test in
   let occurrence_length (_, { first_at; last_at; count }) =
     if count = degree then Some (last_at - first_at + 1) else None
   in
   let subarray_lens_of_most_frequent =
-    Occurrences.bindings knowledge |> List.filter_map occurrence_length
+    Occurrences.bindings occurrences |> List.filter_map occurrence_length
   in
   match subarray_lens_of_most_frequent with
   | first :: rest -> Some (List.fold_left Int.min first rest)
