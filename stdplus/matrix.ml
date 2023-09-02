@@ -36,11 +36,13 @@ let find value m =
   |> Array.find_map (fun (i, row) -> Option.map (fun j -> (i, j)) row)
 
 let find_all value m =
+  let pair_with_row_index (i, row) =
+    get_index_all value row |> List.rev_map (fun j -> (i, j))
+  in
   m
   |> Array.to_list
   |> List.enumerate
-  |> List.rev_map (fun (i, row) ->
-         get_index_all value row |> List.rev_map (fun j -> (i, j)))
+  |> List.rev_map pair_with_row_index
   |> List.concat
 
 let from_string parse lines =
