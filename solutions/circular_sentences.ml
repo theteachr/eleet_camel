@@ -13,14 +13,15 @@ let first_char s = String.get s 0
 let solve test =
   let words = String.split_on_char ' ' test in
   (* Just keep the _fi_rst and _la_st character_s_ of every word. *)
-  let filas = List.map (fun w -> (first_char w, last_char w)) words in
+  let filas = List.map (fun word -> (first_char word, last_char word)) words in
   (* Get the first character of the first word to compare it later
      with the last character of the last word. *)
   let first, _ = List.hd filas in
   let rec is_circular = function
     | [] -> true
-    | [ (_, c) ] -> c = first
-    | (_, x) :: ((x', _) :: _ as rest) when x = x' -> is_circular rest
+    | [ (_, last) ] -> last = first
+    | (_, last) :: ((first, _) :: _ as rest) when first = last ->
+        is_circular rest
     | _ -> false
   in
   is_circular filas

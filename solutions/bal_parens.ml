@@ -31,9 +31,11 @@ let to_string = Bool.to_string
 let rec balanced open_brackets brackets =
   let open Bracket in
   match (open_brackets, Seq.uncons brackets) with
-  | [] , None -> true
-  | _, Some (Open b, bs) -> balanced (b :: open_brackets) bs
-  | b' :: bs', Some (Close b, bs) when b = b' -> balanced bs' bs
+  | [], None -> true
+  | _, Some (Open open_bracket, brackets) ->
+      balanced (open_bracket :: open_brackets) brackets
+  | open_bracket :: rest, Some (Close closed_bracket, brackets)
+    when open_bracket = closed_bracket -> balanced rest brackets
   | _ -> false
 
 let solve = balanced []
