@@ -62,5 +62,7 @@ let () =
   let write_actual (file, new_entry) =
     Out_channel.(output_string (open_text file) new_entry)
   in
-  solvers |> Solutions.bindings |> List.map out_file_content
+  solvers
+  |> Solutions.bindings
+  |> List.map out_file_content
   |> List.iter write_actual
