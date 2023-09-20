@@ -6,7 +6,8 @@ type input = int list * int list
 type output = int list
 
 let parse lines =
-  let int_lines = lines
+  let int_lines =
+    lines
     |> String.split_on_char '\n'
     |> List.map (List.map int_of_string << String.split_on_char ' ')
   in
@@ -14,10 +15,7 @@ let parse lines =
   | [ first; second ] -> (first, second)
   | _ -> failwith "Bad input"
 
-let to_string output =
-  output
-  |> List.map Int.to_string
-  |> String.concat " "
+let to_string output = output |> List.map Int.to_string |> String.concat " "
 
 let solve (l_one, l_two) =
   let add_with_carry (c, sums) (a, b) =

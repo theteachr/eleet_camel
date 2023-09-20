@@ -33,8 +33,7 @@ let build_occurrences nums =
     in
     (Int.max occ.count degree, Occurrences.add n occ occs)
   in
-  List.fold_left update_degree_occs (0, Occurrences.empty)
-    (List.enumerate nums)
+  List.fold_left update_degree_occs (0, Occurrences.empty) (List.enumerate nums)
 
 let print_entry n value =
   let { first_at; last_at; count } = value in

@@ -85,9 +85,7 @@ let parse lines =
   String.split_on_char '\n' lines |> List.map (Option.get << Command.of_string)
 
 let to_string cmd_outs =
-  cmd_outs
-  |> List.map string_of_cmd_out
-  |> String.concat " "
+  cmd_outs |> List.map string_of_cmd_out |> String.concat " "
 
 let solve commands =
   let run (trie, outputs) cmd =
