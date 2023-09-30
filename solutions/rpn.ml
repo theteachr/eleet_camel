@@ -54,8 +54,10 @@ let to_string = function
 let rec eval_rpn out tokens =
   match (out, tokens) with
   | [ x ], [] -> Some x
-  | out, Token.Num n :: ts -> eval_rpn (n :: out) ts
-  | r :: l :: out, Token.Op op :: ts -> eval_rpn ((Op.f op) l r :: out) ts
+  | _, Token.Num n :: tokens' -> eval_rpn (n :: out) tokens'
+  | r :: l :: out', Token.Op op :: tokens' ->
+      let open Op.Infix in
+      eval_rpn ((l < op > r) :: out') tokens'
   | _ -> None
 
 let solve = eval_rpn []
