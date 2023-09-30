@@ -16,6 +16,12 @@ module Op = struct
     | Sub -> '-'
     | Mul -> '*'
     | Div -> '/'
+
+  module Infix = struct
+    let ( < ) left op = f op @@ left
+
+    let ( > ) f rite = f rite
+  end
 end
 
 module Token = struct
