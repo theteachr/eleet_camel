@@ -46,6 +46,7 @@ let find_all value m =
   |> List.concat
 
 let from_string parse lines =
-  String.split_on_char '\n' lines
+  lines
+  |> String.split_on_char '\n'
   |> List.map (List.map parse << String.split_on_char ' ')
   |> of_list

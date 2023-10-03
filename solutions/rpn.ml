@@ -41,7 +41,8 @@ module Token = struct
   let of_string s = try Some (of_string_exn s) with _ -> None
 end
 
-let parse line = String.split_on_char ' ' line |> List.map Token.of_string_exn
+let parse line =
+  line |> String.split_on_char ' ' |> List.map Token.of_string_exn
 
 type input = Token.t list
 

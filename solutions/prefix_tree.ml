@@ -55,13 +55,13 @@ module Command = struct
     | Unit
     | Boolean of bool
 
-  let of_string line =
+  let of_string_exn line =
     match String.split_on_char ':' line with
-    | [ "Trie" ] -> Some New
-    | [ "insert"; s ] -> Some (Insert s)
-    | [ "search"; s ] -> Some (Search s)
-    | [ "startsWith"; s ] -> Some (Starts_with s)
-    | _ -> None
+    | [ "Trie" ] -> New
+    | [ "insert"; s ] -> Insert s
+    | [ "search"; s ] -> Search s
+    | [ "startsWith"; s ] -> Starts_with s
+    | _ -> failwith "Unknown command"
 
   let execute cmd trie =
     match cmd with
@@ -82,7 +82,7 @@ let string_of_cmd_out = function
   | Command.Boolean b -> Bool.to_string b
 
 let parse lines =
-  String.split_on_char '\n' lines |> List.map (Option.get << Command.of_string)
+  lines |> String.split_on_char '\n' |> List.map Command.of_string_exn
 
 let to_string cmd_outs =
   cmd_outs |> List.map string_of_cmd_out |> String.concat " "
@@ -97,4 +97,4 @@ let solve commands =
     in
     (updated_trie, out :: outputs)
   in
-  List.fold_left run (new_node (), []) commands |> snd |> List.rev
+  commands |> List.fold_left run (new_node (), []) |> snd |> List.rev

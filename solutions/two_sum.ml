@@ -7,7 +7,9 @@ type output = int * int
 module Index_map = Map.Make (Int)
 
 let parse lines =
-  let to_nums line = String.split_on_char ' ' line |> List.map int_of_string in
+  let to_nums line =
+    line |> String.split_on_char ' ' |> List.map int_of_string
+  in
   match String.split_on_char '\n' lines with
   | [ nums_line; target ] -> (to_nums nums_line, int_of_string target)
   | _ -> failwith "Malformed input"
