@@ -10,8 +10,6 @@ type trie_node =
 
 let new_node () = { end_of_word = false; paths = Array.make 26 None }
 
-let chars_of_string s = s |> String.to_seq |> List.of_seq
-
 let insert s root =
   let set_new_node index paths =
     let node = new_node () in
@@ -24,23 +22,24 @@ let insert s root =
     | Some node -> node
     | None -> set_new_node index paths
   in
-  let rec ins root = function
-    | [] -> root.end_of_word <- true
-    | ch :: chars -> ins (next_node ch root.paths) chars
+  let rec ins root chars =
+    match Seq.uncons chars with
+    | None -> root.end_of_word <- true
+    | Some (ch, chars') -> ins (next_node ch root.paths) chars'
   in
-  chars_of_string s |> ins root
+  ins root (String.to_seq s)
 
 let rec advance chars node =
-  match chars with
-  | [] -> Some node
-  | ch :: chars -> node.paths.(char_index ch) >>= advance chars
+  match Seq.uncons chars with
+  | None -> Some node
+  | Some (ch, chars') -> node.paths.(char_index ch) >>= advance chars'
 
 let search text root =
-  advance (chars_of_string text) root
+  advance (String.to_seq text) root
   |> Option.fold ~none:false ~some:(fun node -> node.end_of_word)
 
 let starts_with prefix root =
-  advance (chars_of_string prefix) root |> Option.is_some
+  advance (String.to_seq prefix) root |> Option.is_some
 
 module Command = struct
   type t =
