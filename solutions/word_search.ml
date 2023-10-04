@@ -30,11 +30,11 @@ let solve (word, board) =
     | [], _ -> true
     | input_char :: chars, Some (Cell.Unvisited board_char)
       when input_char = board_char ->
-        Matrix.update loc Cell.Visited board;
+        Matrix.mark loc board;
         let found =
           neighbors loc |> List.to_seq |> Seq.map (search chars) |> Seq.any
         in
-        Matrix.update loc (Cell.Unvisited input_char) board;
+        Matrix.unmark loc input_char board;
         found
     | _ -> false
   in

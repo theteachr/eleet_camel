@@ -50,3 +50,7 @@ let from_string parse lines =
   |> String.split_on_char '\n'
   |> List.map (List.map parse << String.split_on_char ' ')
   |> of_list
+
+let mark (row, col) m = m.(row).(col) <- Cell.Visited
+
+let unmark (row, col) x m = m.(row).(col) <- Cell.Unvisited x
