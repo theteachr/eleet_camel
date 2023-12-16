@@ -8,5 +8,7 @@ search:app
 insert:two
 startsWith:t
 search:two
+insert:three
+search:two
 ===
-() () true false true () true () true true
+() () true false true () true () true true () true
