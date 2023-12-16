@@ -18,7 +18,9 @@ let insert s root value =
   in
   let next_node ch paths =
     let index = char_index ch in
-    Option.value paths.(index) ~default:(set_new_node index paths)
+    match paths.(index) with
+    | Some node -> node
+    | None -> set_new_node index paths
   in
   let rec ins root chars =
     match Seq.uncons chars with
