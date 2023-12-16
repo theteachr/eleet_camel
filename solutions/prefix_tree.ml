@@ -3,14 +3,14 @@ open Option.Infix
 
 let char_index ch = Char.code ch - Char.code 'a'
 
-type trie_node =
-  { mutable end_of_word : bool
-  ; paths : trie_node option array
+type 'a trie_node =
+  { mutable value : 'a option
+  ; paths : 'a trie_node option array
   }
 
-let new_node () = { end_of_word = false; paths = Array.make 26 None }
+let new_node () = { value = None; paths = Array.make 26 None }
 
-let insert s root =
+let insert s root value =
   let set_new_node index paths =
     let node = new_node () in
     paths.(index) <- Some node;
@@ -18,28 +18,30 @@ let insert s root =
   in
   let next_node ch paths =
     let index = char_index ch in
-    match paths.(index) with
-    | Some node -> node
-    | None -> set_new_node index paths
+    Option.value paths.(index) ~default:(set_new_node index paths)
   in
   let rec ins root chars =
     match Seq.uncons chars with
-    | None -> root.end_of_word <- true
+    | None -> root.value <- Some value
     | Some (ch, chars') -> ins (next_node ch root.paths) chars'
   in
   ins root (String.to_seq s)
 
-let rec advance chars node =
-  match Seq.uncons chars with
-  | None -> Some node
-  | Some (ch, chars') -> node.paths.(char_index ch) >>= advance chars'
+let advance text node =
+  let rec move chars node =
+    match Seq.uncons chars with
+    | None -> Some node
+    | Some (ch, chars') -> node.paths.(char_index ch) >>= move chars'
+  in
+  move (String.to_seq text) node
+
+let advance_by_char c node = node.paths.(char_index c)
 
 let search text root =
-  advance (String.to_seq text) root
-  |> Option.fold ~none:false ~some:(fun node -> node.end_of_word)
+  advance text root
+  |> Option.fold ~none:false ~some:(fun node -> Option.is_some node.value)
 
-let starts_with prefix root =
-  advance (String.to_seq prefix) root |> Option.is_some
+let starts_with prefix root = advance prefix root |> Option.is_some
 
 module Command = struct
   type t =
@@ -49,7 +51,7 @@ module Command = struct
     | Starts_with of string
 
   type out =
-    | Empty of trie_node
+    | Empty of int trie_node
     | Unit
     | Boolean of bool
 
@@ -65,7 +67,7 @@ module Command = struct
     match cmd with
     | New -> Empty (new_node ())
     | Insert s ->
-        insert s trie;
+        insert s trie 0;
         Unit
     | Search s -> Boolean (search s trie)
     | Starts_with s -> Boolean (starts_with s trie)
