@@ -1,10 +1,10 @@
 type input = string list
 
-type output = unit
+type output = int
 
 let parse = String.split_on_char '\n'
 
-let to_string _ = "()"
+let to_string = Int.to_string
 
 let strings =
   [ "zero"
@@ -94,5 +94,4 @@ let solve' test =
   (t * 10) + u
 
 let solve tests =
-  let answer = tests |> List.map solve' |> List.fold_left ( + ) 0 in
-  Printf.printf "%d\n" answer
+  tests |> List.map solve' |> List.fold_left ( + ) 0
