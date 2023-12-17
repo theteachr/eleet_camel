@@ -57,27 +57,23 @@ let tests =
 let solve' test =
   let scan (chars : char Seq.t) trie =
     let rec scan_until chars trie =
-      match Seq.uncons chars with
-      | Some (c, rest) -> (
+      Option.bind (Seq.uncons chars) (fun (c, rest) ->
           match digit_of_char c with
           | Some value -> Some value
           | None -> (
               match Prefix_tree.advance_by_char c trie with
               | Some { value = Some digit; _ } -> Some digit
-              | Some ({ value = None; _ } as node) -> scan_until rest node
+              | Some node -> scan_until rest node
               | None -> None))
-      | None -> None
     in
     let rec scan' chars =
-      match Seq.uncons chars with
-      | Some (c, rest) -> (
+      Option.bind (Seq.uncons chars) (fun (c, rest) ->
           match digit_of_char c with
           | Some x -> Some x
           | None -> (
               match scan_until chars trie with
               | Some x -> Some x
               | None -> scan' rest))
-      | None -> None
     in
     scan' chars
   in
@@ -91,5 +87,4 @@ let solve' test =
   in
   (t * 10) + u
 
-let solve tests =
-  tests |> List.map solve' |> List.fold_left ( + ) 0
+let solve tests = tests |> List.map solve' |> List.fold_left ( + ) 0
