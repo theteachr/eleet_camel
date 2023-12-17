@@ -55,12 +55,10 @@ let tests =
   ]
 
 let solve' test =
-  print_endline test;
   let scan (chars : char Seq.t) trie =
     let rec scan_until chars trie =
       match Seq.uncons chars with
       | Some (c, rest) -> (
-          Printf.printf "At %c\n" c;
           match digit_of_char c with
           | Some value -> Some value
           | None -> (
