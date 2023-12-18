@@ -60,20 +60,17 @@ let solve' test =
       Option.bind (Seq.uncons chars) (fun (c, rest) ->
           match digit_of_char c with
           | Some value -> Some value
-          | None -> (
-              match Prefix_tree.advance_by_char c trie with
-              | Some { value = Some digit; _ } -> Some digit
-              | Some node -> scan_until rest node
-              | None -> None))
+          | None ->
+              Option.bind (Prefix_tree.advance_by_char c trie) (fun node ->
+                  match node with
+                  | Prefix_tree.{ value = Some digit; _ } -> Some digit
+                  | node -> scan_until rest node))
     in
     let rec scan' chars =
-      Option.bind (Seq.uncons chars) (fun (c, rest) ->
-          match digit_of_char c with
+      Option.bind (Seq.uncons chars) (fun (_, rest) ->
+          match scan_until chars trie with
           | Some x -> Some x
-          | None -> (
-              match scan_until chars trie with
-              | Some x -> Some x
-              | None -> scan' rest))
+          | None -> scan' rest)
     in
     scan' chars
   in
