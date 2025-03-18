@@ -18,10 +18,11 @@ let parse lines =
 let to_string output = output |> List.map Int.to_string |> String.concat " "
 
 let solve ns =
-  let rec add carry = function
-    | [], xs | xs, [] -> if carry = 0 then xs else add 0 (xs, [carry])
+  let rec add carry res = function
+    | [], xs | xs, [] ->
+        if carry = 0 then List.rev_append res xs else add 0 res (xs, [ carry ])
     | x :: xs, y :: ys ->
         let sum = x + y + carry in
-        (sum mod 10) :: add (sum / 10) (xs, ys)
+        add (sum / 10) ((sum mod 10) :: res) (xs, ys)
   in
-  add 0 ns
+  add 0 [] ns
