@@ -17,13 +17,11 @@ let parse lines =
 
 let to_string output = output |> List.map Int.to_string |> String.concat " "
 
-let solve (l_one, l_two) =
-  let add_with_carry (c, sums) (a, b) =
-    let sum = a + b + c in
-    let c, units_digit = sum /% 10 in
-    (c, units_digit :: sums)
+let solve ns =
+  let rec add carry = function
+    | [], xs | xs, [] -> if carry = 0 then xs else add 0 (xs, [carry])
+    | x :: xs, y :: ys ->
+        let sum = x + y + carry in
+        (sum mod 10) :: add (sum / 10) (xs, ys)
   in
-  let zipped = List.zip_longest l_one l_two ~default:0 in
-  let carry, sums = List.fold_left add_with_carry (0, []) zipped in
-  let sums = if carry = 1 then 1 :: sums else sums in
-  List.rev sums
+  add 0 ns
