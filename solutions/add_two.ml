@@ -1,5 +1,4 @@
 open Stdplus.Infix
-open Stdplus
 
 type input = int list * int list
 
