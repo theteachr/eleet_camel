@@ -27,19 +27,16 @@ module Point = struct
 
   open Direction
 
-  let next direction (row, col) =
+  let move delta direction (row, col) =
     match direction with
-    | Up -> (row - 1, col)
-    | Right -> (row, col + 1)
-    | Down -> (row + 1, col)
-    | Left -> (row, col - 1)
+    | Up -> (row - delta, col)
+    | Right -> (row, col + delta)
+    | Down -> (row + delta, col)
+    | Left -> (row, col - delta)
 
-  let prev direction (row, col) =
-    match direction with
-    | Up -> (row + 1, col)
-    | Right -> (row, col - 1)
-    | Down -> (row - 1, col)
-    | Left -> (row, col + 1)
+  let next = move 1
+
+  let prev = move (-1)
 end
 
 let solve matrix =
