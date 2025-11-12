@@ -1,7 +1,6 @@
 open Stdplus.Infix
 
 type input = int list * int list
-
 type output = int list
 
 let parse lines =

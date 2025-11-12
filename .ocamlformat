@@ -1,7 +1,5 @@
 exp-grouping = preserve
-break-separators = before
-dock-collection-brackets = false
 type-decl = sparse
-break-cases = fit-or-vertical
-module-item-spacing = sparse
+field-space = tight-decl
 break-infix = fit-or-vertical
+break-cases = toplevel

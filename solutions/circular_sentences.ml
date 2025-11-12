@@ -1,13 +1,9 @@
 type input = string
-
 type output = bool
 
 let to_string = Bool.to_string
-
 let parse = Fun.id
-
 let last_char s = String.length s - 1 |> String.get s
-
 let first_char s = String.get s 0
 
 let solve test =

@@ -21,11 +21,9 @@ module Bracket = struct
 end
 
 type input = Bracket.t Seq.t
-
 type output = bool
 
 let parse line = line |> String.to_seq |> Seq.map Bracket.of_char_exn
-
 let to_string = Bool.to_string
 
 let rec balanced open_brackets brackets =
@@ -35,7 +33,8 @@ let rec balanced open_brackets brackets =
   | _, Some (Open open_bracket, brackets) ->
       balanced (open_bracket :: open_brackets) brackets
   | open_bracket :: rest, Some (Close closed_bracket, brackets)
-    when open_bracket = closed_bracket -> balanced rest brackets
+    when open_bracket = closed_bracket ->
+      balanced rest brackets
   | _ -> false
 
 let solve = balanced []

@@ -3,13 +3,10 @@ open Stdplus.Infix
 
 module type Solution = sig
   type input
-
   type output
 
   val parse : string -> input
-
   val solve : input -> output
-
   val to_string : output -> string
 end
 
@@ -19,42 +16,48 @@ let string_map_of_pairs =
   List.fold_left (fun m (n, v) -> Solutions.add n v m) Solutions.empty
 
 let solvers : (string * (module Solution)) list =
-  [ ("697", (module Degree))
-  ; ("20", (module Bal_parens))
-  ; ("1", (module Two_sum))
-  ; ("2490", (module Circular_sentences))
-  ; ("150", (module Rpn))
-  ; ("2", (module Add_two))
-  ; ("208", (module Prefix_tree))
-  ; ("198", (module House_robber))
-  ; ("79", (module Word_search))
-  ; ("54", (module Spiral))
-  ; ("121", (module Stocks))
+  [
+    ("697", (module Degree));
+    ("20", (module Bal_parens));
+    ("1", (module Two_sum));
+    ("2490", (module Circular_sentences));
+    ("150", (module Rpn));
+    ("2", (module Add_two));
+    ("208", (module Prefix_tree));
+    ("198", (module House_robber));
+    ("79", (module Word_search));
+    ("54", (module Spiral));
+    ("121", (module Stocks));
   ]
 
 (* This shadowing is done to avoid module type inference complications. *)
-let solvers = solvers |> string_map_of_pairs
+let solvers = string_map_of_pairs solvers
 
+(* TODO: Modularize *)
 let test_seperator = "\n---\n\n"
-
 let solution_separator = "===\n"
-
 let tests_file = Printf.sprintf "tests/%s.txt"
 
+(* TODO: Make a type: [test] *)
+
+(* XXX: Return a [Seq] *)
 let load_tests_from_file f =
   In_channel.(with_open_text f input_all)
   |> Str.(split @@ regexp test_seperator)
   |> List.map (List.hd << Str.(split @@ regexp solution_separator))
 
 let get_solved_entry (module Solver : Solution) test =
-  let sol = Solver.(String.trim test |> parse |> solve |> to_string) in
-  test ^ solution_separator ^ sol ^ "\n"
+  let sol = Solver.(test |> String.trim |> parse |> solve |> to_string) in
+  Printf.sprintf {|%s===
+%s
+|} test sol
 
 let () =
   let out_file_content (problem_id, solver) =
     let out_file = tests_file problem_id in
     let content =
-      load_tests_from_file out_file
+      out_file
+      |> load_tests_from_file
       |> List.map (get_solved_entry solver)
       |> String.concat test_seperator
     in

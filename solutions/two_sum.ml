@@ -1,7 +1,6 @@
 open Stdplus
 
 type input = int list * int
-
 type output = int * int
 
 module Index_map = Map.Make (Int)

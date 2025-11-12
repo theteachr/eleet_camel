@@ -19,7 +19,6 @@ module Op = struct
 
   module Infix = struct
     let ( < ) left op = f op @@ left
-
     let ( > ) f rite = f rite
   end
 end
@@ -45,7 +44,6 @@ let parse line =
   line |> String.split_on_char ' ' |> List.map Token.of_string_exn
 
 type input = Token.t list
-
 type output = int option
 
 let to_string = function

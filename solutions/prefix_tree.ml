@@ -3,10 +3,10 @@ open Option.Infix
 
 let char_index ch = Char.code ch - Char.code 'a'
 
-type trie_node =
-  { mutable end_of_word : bool
-  ; paths : trie_node option array
-  }
+type trie_node = {
+  mutable end_of_word: bool;
+  paths: trie_node option array;
+}
 
 let new_node () = { end_of_word = false; paths = Array.make 26 None }
 
@@ -72,7 +72,6 @@ module Command = struct
 end
 
 type input = Command.t list
-
 type output = Command.out list
 
 let string_of_cmd_out = function

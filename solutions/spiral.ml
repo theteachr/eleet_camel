@@ -1,11 +1,9 @@
 open Stdplus
 
 type input = int Matrix.t
-
 type output = int list
 
 let to_string xs = List.map Int.to_string xs |> String.concat " "
-
 let parse lines = Matrix.from_string int_of_string lines
 
 module Direction = struct
@@ -35,7 +33,6 @@ module Point = struct
     | Left -> (row, col - delta)
 
   let next = move 1
-
   let prev = move (-1)
 end
 

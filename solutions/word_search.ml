@@ -2,7 +2,6 @@ open Stdplus
 open Stdplus.Infix
 
 type input = char Seq.t * char Cell.t Matrix.t
-
 type output = bool
 
 let char_of_string s = String.get s 0
@@ -13,8 +12,8 @@ let parse text =
     | word :: board -> (word, List.map (String.split_on_char ' ') board)
     | [] -> failwith "Bad input"
   in
-  ( chars |> String.to_seq
-  , board |> Matrix.of_list |> Matrix.map (Cell.unvisited << char_of_string) )
+  ( chars |> String.to_seq,
+    board |> Matrix.of_list |> Matrix.map (Cell.unvisited << char_of_string) )
 
 let to_string = Bool.to_string
 
